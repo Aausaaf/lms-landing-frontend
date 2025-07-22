@@ -1,136 +1,96 @@
+"use client";
+
+import { useState } from "react";
+import { Heart, Users, Clock, Target, Star } from "lucide-react";
 import { useNavigation } from "@/components/navigation";
 
 export default function CourseCard({ course }) {
+    const [isWishlisted, setIsWishlisted] = useState(false);
     const { navigate } = useNavigation();
-    const getBadgeColor = (badge) => {
-        const colors = {
-            Bestseller: "bg-orange-600",
-            "New Launch": "bg-green-600",
-            Popular: "bg-red-600",
-            "Limited Seats": "bg-purple-600",
-            Foundation: "bg-blue-600",
-            Trending: "bg-pink-600",
-            Free: "bg-emerald-600",
-            Hot: "bg-red-500",
-        };
-        return colors[badge] || "bg-orange-600";
-    };
-
-    const getLevelColor = (level) => {
-        const colors = {
-            Beginner: "text-green-600 bg-green-50",
-            Intermediate: "text-yellow-600 bg-yellow-50",
-            Advanced: "text-red-600 bg-red-50",
-        };
-        return colors[level] || "text-gray-600 bg-gray-50";
-    };
-
-    const renderStars = (rating) => {
-        const stars = [];
-        const fullStars = Math.floor(rating);
-        const hasHalfStar = rating % 1 !== 0;
-
-        for (let i = 0; i < fullStars; i++) {
-            stars.push("⭐");
-        }
-        if (hasHalfStar) {
-            stars.push("⭐");
-        }
-
-        return stars.join("");
-    };
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:scale-105">
+        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+            {/* Course Image */}
             <div className="relative">
                 <img src={course.image || "/placeholder.svg"} alt={course.title} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
 
-                {/* Badges */}
-                <div className="absolute top-4 left-4 flex flex-col gap-2">
-                    <div className={`${getBadgeColor(course.badge)} text-white px-3 py-1 rounded-full text-sm font-medium`}>{course.badge}</div>
-                    {course.isNew && <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">New</div>}
+                {/* Badge */}
+                <div className={`absolute top-4 left-4 ${course.badgeColor} text-white px-3 py-1 rounded-full text-sm font-medium`}>{course.badge}</div>
+
+                {/* Rating */}
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                    <Star className="h-4 w-4 text-yellow-400 fill-current mr-1" />
+                    {course.rating}
                 </div>
 
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-sm font-medium">
-                    {course.stats.rating} {renderStars(course.stats.rating).slice(0, 1)}
-                </div>
-
-                {/* Level Badge */}
-                <div className="absolute bottom-4 left-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getLevelColor(course.level)}`}>{course.level}</span>
-                </div>
+                {/* Wishlist Button */}
+                <button
+                    onClick={() => setIsWishlisted(!isWishlisted)}
+                    className="absolute bottom-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors"
+                >
+                    <Heart className={`w-5 h-5 transition-colors ${isWishlisted ? "text-red-500 fill-current" : "text-gray-600 hover:text-red-500"}`} />
+                </button>
             </div>
 
+            {/* Course Content */}
             <div className="p-6">
-                <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm text-orange-600 font-medium">{course.category}</span>
-                    <span className="text-sm text-gray-500">{course.language}</span>
-                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{course.title}</h3>
+                <p className="text-gray-600 mb-4 line-clamp-2">{course.description}</p>
 
-                <h3 className="text-lg font-semibold mb-3 line-clamp-2 leading-tight">{course.title}</h3>
-                <p className="text-gray-600 mb-4 text-sm line-clamp-2">{course.description}</p>
-
-                {/* Instructor */}
-                <div className="flex items-center mb-4">
-                    <img src={course.instructor.image || "/placeholder.svg"} alt={course.instructor.name} className="w-8 h-8 rounded-full object-cover mr-3" />
-                    <div>
-                        <div className="text-sm font-medium">{course.instructor.name}</div>
-                        <div className="text-xs text-gray-500 flex items-center">
-                            {renderStars(course.instructor.rating)} ({course.instructor.rating})
+                {/* Instructor Info */}
+                <div className="mb-4">
+                    <div className="flex items-center">
+                        {course.multipleInstructors ? (
+                            <div className="flex -space-x-2 mr-3">
+                                <img src={course.instructors[0].avatar || "/placeholder.svg"} alt={course.instructors[0].name} className="w-8 h-8 rounded-full object-cover border-2 border-white" />
+                                <div className="w-8 h-8 rounded-full bg-orange-600 text-white text-xs flex items-center justify-center border-2 border-white font-medium">
+                                    +{course.multipleInstructors}
+                                </div>
+                            </div>
+                        ) : (
+                            <img src={course.instructors[0].avatar || "/placeholder.svg"} alt={course.instructors[0].name} className="w-8 h-8 rounded-full object-cover mr-3" />
+                        )}
+                        <div>
+                            <div className="text-sm font-medium text-gray-900">
+                                {course.instructors[0].name}
+                                {course.multipleInstructors && ` & ${course.multipleInstructors} others`}
+                            </div>
+                            <div className="text-xs text-gray-500">{course.instructors[0].experience}</div>
                         </div>
                     </div>
                 </div>
 
                 {/* Course Stats */}
-                <div className="grid grid-cols-3 gap-4 mb-4 text-center">
-                    <div>
-                        <div className="text-sm font-bold text-gray-900">{course.stats.hours}h</div>
-                        <div className="text-xs text-gray-500">Duration</div>
+                <div className="grid grid-cols-3 gap-4 mb-6 text-sm text-gray-600">
+                    <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-1" />
+                        {course.duration}
                     </div>
-                    <div>
-                        <div className="text-sm font-bold text-gray-900">{course.stats.students.toLocaleString()}</div>
-                        <div className="text-xs text-gray-500">Students</div>
+                    <div className="flex items-center">
+                        <Users className="h-4 w-4 mr-1" />
+                        {course.students.toLocaleString()}
                     </div>
-                    <div>
-                        <div className="text-sm font-bold text-gray-900">{course.stats.successRate}%</div>
-                        <div className="text-xs text-gray-500">Success</div>
+                    <div className="flex items-center">
+                        <Target className="h-4 w-4 mr-1" />
+                        {course.successRate}
                     </div>
-                </div>
-
-                {/* Features */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                    {course.features.slice(0, 3).map((feature, index) => (
-                        <span key={index} className="text-xs bg-orange-50 text-orange-600 px-2 py-1 rounded-full">
-                            {feature}
-                        </span>
-                    ))}
-                    {course.features.length > 3 && <span className="text-xs bg-gray-50 text-gray-600 px-2 py-1 rounded-full">+{course.features.length - 3} more</span>}
                 </div>
 
                 {/* Pricing */}
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-6">
                     <div>
-                        {course.isFree ? (
-                            <span className="text-2xl font-bold text-green-600">Free</span>
-                        ) : (
-                            <>
-                                <span className="text-2xl font-bold text-orange-600">₹{course.pricing.current.toLocaleString()}</span>
-                                {course.pricing.original > course.pricing.current && <span className="text-sm text-gray-500 line-through ml-2">₹{course.pricing.original.toLocaleString()}</span>}
-                            </>
-                        )}
+                        <span className="text-2xl font-bold text-orange-600">₹{course.price.toLocaleString()}</span>
+                        <span className="text-sm text-gray-500 line-through ml-2">₹{course.originalPrice.toLocaleString()}</span>
                     </div>
-                    {!course.isFree && course.pricing.discount > 0 && <span className="bg-green-500 text-white px-2 py-1 rounded text-sm font-medium">{course.pricing.discount}% OFF</span>}
+                    <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">{course.discount}% OFF</span>
                 </div>
 
                 {/* CTA Buttons */}
                 <div className="space-y-3">
-                    <button
-                        onClick={() => navigate("/course-details")}
-                        className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 px-4 rounded-xl hover:shadow-lg transition-all duration-200"
-                    >
-                        {course.isFree ? "Enroll Free" : "Enroll Now"}
+                    <button onClick={() => navigate("/course-details")} className="w-full bg-orange-600 text-white font-semibold py-3 px-4 rounded-xl hover:bg-orange-700 transition-colors">
+                        Enroll Now
                     </button>
-                    <button className="w-full text-orange-600 border-2 border-orange-600 py-2 px-4 rounded-xl hover:bg-orange-50 transition-colors text-sm">Preview Course</button>
+                    <button className="w-full text-orange-600 border border-orange-600 font-semibold py-3 px-4 rounded-xl hover:bg-orange-50 transition-colors">Preview Course</button>
                 </div>
             </div>
         </div>

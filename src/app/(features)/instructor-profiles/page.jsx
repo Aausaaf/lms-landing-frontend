@@ -19,7 +19,7 @@ const InstructorProfiles = () => {
         name: "Dr. Priya Sharma",
         title: "Senior Mathematics & Physics Educator",
         shortBio: "Expert educator with 12+ years of experience in teaching competitive exam preparation for JEE, NEET, and Class 10-12 students.",
-        photo: "https://images.unsplash.com/photo-1494790108755-2616c9c2b8b5?w=400&h=400&fit=crop&crop=face",
+        photo: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2940&auto=format&fit=crop",
         isVerified: true,
         credentials: ["Ph.D. Mathematics", "IIT Delhi Alumni", "12+ Years Experience"],
         socialLinks: [
