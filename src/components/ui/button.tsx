@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-
+import * as LucideIcons from "lucide-react";
 import GlobalUtils from "@/lib/utils";
 
 const buttonVariants = cva(
@@ -13,7 +13,7 @@ const buttonVariants = cva(
                 primary: "bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white shadow-md hover:shadow-lg focus:ring-orange-500",
                 destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
                 secondary: "bg-white text-[#ff9500] shadow-md hover:shadow-lg focus:ring-gray-200 dark:bg-gray-800 dark:text-orange-400 dark:focus:ring-gray-700",
-                outline: "bg-transparent border dark:border-white/30 dark:text-white  backdrop-blur-md hover:bg-white/10 focus:ring-white/20",
+                outline: "bg-transparent border dark:border-white/30 dark:text-white backdrop-blur-md hover:bg-white/10 focus:ring-white/20",
                 ghost: "bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-200 dark:text-gray-300 dark:hover:bg-gray-800 dark:focus:ring-gray-700",
                 link: "text-primary underline-offset-4 hover:underline",
             },
@@ -34,12 +34,25 @@ const buttonVariants = cva(
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
     asChild?: boolean;
+    icon?: keyof typeof LucideIcons;
+    iconPosition?: "left" | "right";
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, asChild = false, ...props }, ref) => {
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, asChild = false, icon, iconPosition = "left", children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return <Comp className={GlobalUtils.cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+
+    // Get the icon component if icon prop is provided
+    const IconComponent = icon ? (LucideIcons[icon] as React.ComponentType<{ className?: string }>) : null;
+
+    return (
+        <Comp className={GlobalUtils.cn(buttonVariants({ variant, size, className }))} ref={ref} {...props}>
+            {IconComponent && iconPosition === "left" && <IconComponent className="w-4 h-4" />}
+            {children}
+            {IconComponent && iconPosition === "right" && <IconComponent className="w-4 h-4" />}
+        </Comp>
+    );
 });
+
 Button.displayName = "Button";
 
 export { Button, buttonVariants };

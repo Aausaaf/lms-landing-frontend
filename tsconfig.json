@@ -28,7 +28,7 @@
         ".next/types/**/*.ts",
         "**/*.ts",
         "**/*.tsx",
-        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/pages/course-details-page.jsx",
+        "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/pages/course-details.jsx",
         "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/course-call-to-action.jsx",
         "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/course-content.jsx",
         "src/app/(features)/(courseManagement)/(modules)/courses/(pages)/details/components/course/course-footer-banner.jsx",
@@ -99,7 +99,12 @@
         "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/SectionProgress.jsx",
         "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/Timer.jsx",
         "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/components/WebcamMonitor.jsx",
-        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/results/loading.jsx"
+        "src/app/(features)/(courseManagement)/(modules)/exam-interface/[examId]/results/loading.jsx",
+        "src/app/layout/navbar.jsx",
+        "src/app/layout/theme-toggle.jsx",
+        "src/app/layout/layout.jsx",
+        "src/app/layout/footer.jsx",
+        "src/app/providers/theme-provider.jsx"
     ],
     "exclude": ["node_modules"]
 }

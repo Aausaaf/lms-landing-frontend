@@ -1,12 +1,14 @@
+import LandingPage from "./(features)/landing/page";
 import { Layout } from "./layout/layout";
 
 export default function Home() {
     return (
         <Layout>
-            <div className="min-h-screen">
-                {/* Hero Section */}
+            <LandingPage />
+            {/* <div className="min-h-screen">
+               
                 <section className="relative overflow-hidden bg-gradient-to-br from-orange-50 to-orange-100 dark:from-gray-900 dark:to-gray-800 py-20 sm:py-32">
-                    <div className="mx-auto max-w-7xl px-6 lg:px-8">
+                    <div className="mx-auto max-w-[1500px] px-6 lg:px-8">
                         <div className="mx-auto max-w-2xl text-center">
                             <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
                                 Premium Layout
@@ -27,9 +29,9 @@ export default function Home() {
                     </div>
                 </section>
 
-                {/* Features Section */}
+                
                 <section className="py-20 sm:py-32 bg-white dark:bg-gray-900">
-                    <div className="mx-auto max-w-7xl px-6 lg:px-8">
+                    <div className="mx-auto max-w-[1500px] px-6 lg:px-8">
                         <div className="mx-auto max-w-2xl text-center">
                             <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">Everything you need</h2>
                             <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">Our layout system provides all the components you need to build modern, responsive applications.</p>
@@ -66,7 +68,7 @@ export default function Home() {
                         </div>
                     </div>
                 </section>
-            </div>
+            </div> */}
         </Layout>
     );
 }
