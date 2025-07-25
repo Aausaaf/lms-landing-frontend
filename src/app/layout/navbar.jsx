@@ -168,7 +168,7 @@ export function Navbar() {
                         )}
                     </div>
 
-                    {/* <ThemeToggle /> */}
+                    <ThemeToggle />
 
                     <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
                         Get Started Free
@@ -234,10 +234,10 @@ export function Navbar() {
 
                                 <div className="py-6 space-y-4">
                                     <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white">Get Started Free</Button>
-                                    {/* <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-600 dark:text-gray-400">Theme</span>
                                         <ThemeToggle />
-                                    </div> */}
+                                    </div>
                                 </div>
                             </div>
                         </div>

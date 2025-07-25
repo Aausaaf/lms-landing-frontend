@@ -62,7 +62,7 @@ const PaymentSuccess = ({ course, transactionId, onClose }) => {
                 </div>
 
                 <div className="space-y-3">
-                    <Button variant="default" fullWidth iconName="Play" iconPosition="left" onClick={() => navigate("/course-details")}>
+                    <Button variant="default" fullWidth iconName="Play" iconPosition="left" onClick={() => navigate("/course/class-12-math")}>
                         Start Learning Now
                     </Button>
 
