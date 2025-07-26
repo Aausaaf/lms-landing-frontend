@@ -1,96 +1,208 @@
 "use client";
 
-import { useState } from "react";
-import { Heart, Users, Clock, Target, Star } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Star, Clock, Heart, Share2, ChevronRight, BookOpen } from "lucide-react";
+import Image from "next/image";
 import { useNavigation } from "@/components/navigation";
+import GlobalUtils from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
-export default function CourseCard({ course }) {
-    const [isWishlisted, setIsWishlisted] = useState(false);
+/**
+ * Course Card Component
+ * @description Reusable card component for displaying course information
+ */
+export default function CourseCard({ data }) {
     const { navigate } = useNavigation();
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
+    // Default course data structure
+    const [courseData, setCourseData] = useState({
+        id: "",
+        name: "Course Title",
+        description: "Course description",
+        code: "",
+        summary: "Course summary",
+        rating: 0,
+        tags: [],
+        duration: 0,
+        isFeatured: false,
+        categories: [],
+        instructors: [],
+        price: null,
+    });
+
+    useEffect(() => {
+        if (data) {
+            setCourseData((prevData) => ({ ...prevData, ...data }));
+        }
+    }, [data]);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
+    const handleCardClick = () => {
+        navigate(`/courses/details/${courseData.id}`);
+    };
+
+    const formatInstructorNames = () => {
+        if (!courseData.instructors?.length) return "No instructor assigned";
+
+        if (courseData.instructors.length === 1) {
+            return courseData.instructors[0].name;
+        } else if (courseData.instructors.length === 2) {
+            return `${courseData.instructors[0].name} & ${courseData.instructors[1].name}`;
+        } else {
+            return `${courseData.instructors[0].name} +${courseData.instructors.length - 1}`;
+        }
+    };
+
+    const toggleFavorite = (e) => {
+        e.stopPropagation();
+        setIsFavorite(!isFavorite);
+        // TODO: Implement favorite functionality
+    };
+
+    const handleShare = (e) => {
+        e.stopPropagation();
+        // TODO: Implement share functionality
+        if (navigator.share) {
+            navigator.share({
+                title: courseData.name,
+                text: courseData.summary,
+                url: window.location.origin + `/courses/details/${courseData.id}`,
+            });
+        }
+    };
+
+    // Card Layout (default)
     return (
-        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
-            {/* Course Image */}
-            <div className="relative">
-                <img src={course.image || "/placeholder.svg"} alt={course.title} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+        <div onClick={handleCardClick} className="cursor-pointer" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+            <div className="relative w-full overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 hover:shadow-lg dark:bg-gray-900 dark:hover:bg-gray-800">
+                {/* Course Image */}
+                <div className="relative h-32 sm:h-40 w-full overflow-hidden">
+                    <Image
+                        width={400}
+                        height={isMobile ? 128 : 144}
+                        src={GlobalUtils.getMediaUrl({ courseId: data.id, key: "thumbnailUrl" })}
+                        alt={courseData.name}
+                        className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                        onError={(e) => {
+                            e.target.src = `/placeholder.svg?height=${isMobile ? 128 : 144}&width=400`;
+                        }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                {/* Badge */}
-                <div className={`absolute top-4 left-4 ${course.badgeColor} text-white px-3 py-1 rounded-full text-sm font-medium`}>{course.badge}</div>
+                    {/* Top badges */}
+                    <div className="absolute right-2 top-2">
+                        {courseData.tags?.slice(0, 1).map((badge, index) => (
+                            <span key={index} className="rounded-full bg-orange-500 px-2 py-0.5 text-xs font-medium text-white shadow-md capitalize">
+                                {badge}
+                            </span>
+                        ))}
+                    </div>
 
-                {/* Rating */}
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium flex items-center">
-                    <Star className="h-4 w-4 text-yellow-400 fill-current mr-1" />
-                    {course.rating}
-                </div>
-
-                {/* Wishlist Button */}
-                <button
-                    onClick={() => setIsWishlisted(!isWishlisted)}
-                    className="absolute bottom-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors"
-                >
-                    <Heart className={`w-5 h-5 transition-colors ${isWishlisted ? "text-red-500 fill-current" : "text-gray-600 hover:text-red-500"}`} />
-                </button>
-            </div>
-
-            {/* Course Content */}
-            <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{course.title}</h3>
-                <p className="text-gray-600 mb-4 line-clamp-2">{course.description}</p>
-
-                {/* Instructor Info */}
-                <div className="mb-4">
-                    <div className="flex items-center">
-                        {course.multipleInstructors ? (
-                            <div className="flex -space-x-2 mr-3">
-                                <img src={course.instructors[0].avatar || "/placeholder.svg"} alt={course.instructors[0].name} className="w-8 h-8 rounded-full object-cover border-2 border-white" />
-                                <div className="w-8 h-8 rounded-full bg-orange-600 text-white text-xs flex items-center justify-center border-2 border-white font-medium">
-                                    +{course.multipleInstructors}
-                                </div>
-                            </div>
-                        ) : (
-                            <img src={course.instructors[0].avatar || "/placeholder.svg"} alt={course.instructors[0].name} className="w-8 h-8 rounded-full object-cover mr-3" />
-                        )}
-                        <div>
-                            <div className="text-sm font-medium text-gray-900">
-                                {course.instructors[0].name}
-                                {course.multipleInstructors && ` & ${course.multipleInstructors} others`}
-                            </div>
-                            <div className="text-xs text-gray-500">{course.instructors[0].experience}</div>
+                    {/* Bottom info */}
+                    <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
+                        <div className="flex items-center space-x-1">
+                            {[1, 2, 3, 4, 5].map((star, index) => (
+                                <Star
+                                    key={index}
+                                    className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${index < Math.floor(courseData.rating) ? "fill-yellow-400 text-yellow-400" : "fill-gray-400 text-gray-400"}`}
+                                />
+                            ))}
+                            <span className="ml-1 text-xs font-medium text-white">{courseData.rating || 0}</span>
+                        </div>
+                        <div className="flex items-center text-xs text-gray-200">
+                            <Clock className="mr-1 h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                            <span>{courseData.duration || 0}h</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Course Stats */}
-                <div className="grid grid-cols-3 gap-4 mb-6 text-sm text-gray-600">
-                    <div className="flex items-center">
-                        <Clock className="h-4 w-4 mr-1" />
-                        {course.duration}
+                {/* Course Content */}
+                <div className="relative p-3 sm:p-4">
+                    {/* Category and Title */}
+                    <div className="mb-2">
+                        <div className="mb-1 flex items-center justify-between">
+                            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 truncate max-w-[120px]">
+                                {courseData.categories[0]?.name}
+                            </span>
+                            <div className="flex space-x-1">
+                                <button
+                                    onClick={toggleFavorite}
+                                    className="rounded-full bg-gray-100 p-1 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                >
+                                    <Heart className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+                                </button>
+                                <button
+                                    onClick={handleShare}
+                                    className="rounded-full bg-gray-100 p-1 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                >
+                                    <Share2 className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                                </button>
+                            </div>
+                        </div>
+                        <h3
+                            className={`text-sm font-semibold text-gray-900 dark:text-white hover:text-orange-500 dark:hover:text-orange-400 transition-colors duration-200 line-clamp-2 ${
+                                isHovered ? "text-orange-500" : ""
+                            }`}
+                        >
+                            {courseData.name}
+                        </h3>
                     </div>
-                    <div className="flex items-center">
-                        <Users className="h-4 w-4 mr-1" />
-                        {course.students.toLocaleString()}
-                    </div>
-                    <div className="flex items-center">
-                        <Target className="h-4 w-4 mr-1" />
-                        {course.successRate}
-                    </div>
-                </div>
 
-                {/* Pricing */}
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <span className="text-2xl font-bold text-orange-600">₹{course.price.toLocaleString()}</span>
-                        <span className="text-sm text-gray-500 line-through ml-2">₹{course.originalPrice.toLocaleString()}</span>
-                    </div>
-                    <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">{course.discount}% OFF</span>
-                </div>
+                    {/* Description */}
+                    <p className="mb-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{courseData.summary || "No description available"}</p>
 
-                {/* CTA Buttons */}
-                <div className="space-y-3">
-                    <button onClick={() => navigate("/course-details")} className="w-full bg-orange-600 text-white font-semibold py-3 px-4 rounded-xl hover:bg-orange-700 transition-colors">
-                        Enroll Now
-                    </button>
-                    <button className="w-full text-orange-600 border border-orange-600 font-semibold py-3 px-4 rounded-xl hover:bg-orange-50 transition-colors">Preview Course</button>
+                    {/* Instructor */}
+                    <div className="mb-3 flex items-center space-x-2">
+                        <div className="flex -space-x-1">
+                            {courseData.instructors.slice(0, 2).map((instructor, index) => (
+                                <Image
+                                    key={index}
+                                    width={isMobile ? 16 : 20}
+                                    height={isMobile ? 16 : 20}
+                                    src="https://randomuser.me/api/portraits/women/44.jpg"
+                                    alt={instructor.name}
+                                    className={`${isMobile ? "h-4 w-4" : "h-5 w-5"} rounded-full ring-1 ring-white dark:ring-gray-800`}
+                                />
+                            ))}
+                            {(courseData.instructors?.length || 0) > 2 && (
+                                <div
+                                    className={`${
+                                        isMobile ? "h-4 w-4" : "h-5 w-5"
+                                    } rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300 ring-1 ring-white dark:ring-gray-800`}
+                                >
+                                    +{courseData.instructors.length - 2}
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <span className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate block">{formatInstructorNames()}</span>
+                        </div>
+                        <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                            <BookOpen className="mr-1 h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                            {courseData.lessonCount || 0}
+                        </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => navigate("/course-details")}
+                            className={`group w-full bg-orange-50  text-orange-600 border border-orange-600 font-medium text-sm py-2 rounded-lg hover:bg-orange-700 transition-colors hover:text-white`}
+                        >
+                            Enroll Now
+                        </button>
+                        {/* <button className="w-full text-orange-600 border border-orange-600 font-semibold py-3 px-4 rounded-xl hover:bg-orange-50 transition-colors">Preview Course</button> */}
+                    </div>
                 </div>
             </div>
         </div>

@@ -22,23 +22,11 @@ export default function CourseFilters() {
             { value: "medical", label: "Medical", count: 18 },
             { value: "banking", label: "Banking & Finance", count: 12 },
         ],
-        // priceRanges: [
-        //   { value: "free", label: "Free" },
-        //   { value: "0-5000", label: "₹0 - ₹5,000" },
-        //   { value: "5000-15000", label: "₹5,000 - ₹15,000" },
-        //   { value: "15000+", label: "₹15,000+" },
-        // ],
         difficulties: [
             { value: "beginner", label: "Beginner" },
             { value: "intermediate", label: "Intermediate" },
             { value: "advanced", label: "Advanced" },
         ],
-        // durations: [
-        //   { value: "0-20", label: "0-20 hours" },
-        //   { value: "20-50", label: "20-50 hours" },
-        //   { value: "50-100", label: "50-100 hours" },
-        //   { value: "100+", label: "100+ hours" },
-        // ],
         ratings: [
             { value: "4.5+", label: "4.5+ ⭐" },
             { value: "4.0+", label: "4.0+ ⭐" },
@@ -148,26 +136,6 @@ function FilterContent({ filterOptions, filters, handleCheckboxChange, handleRad
                 </div>
             </div>
 
-            {/* Price Range */}
-            <div>
-                <h4 className="font-semibold text-gray-900 mb-4">Price Range</h4>
-                <div className="space-y-3">
-                    {filterOptions?.priceRanges?.map((price) => (
-                        <label key={price.value} className="flex items-center cursor-pointer">
-                            <input
-                                type="radio"
-                                name="price"
-                                value={price.value}
-                                checked={filters.price === price.value}
-                                onChange={() => handleRadioChange("price", price.value)}
-                                className="border-gray-300 text-orange-600 focus:ring-orange-500"
-                            />
-                            <span className="ml-3 text-sm text-gray-700">{price.label}</span>
-                        </label>
-                    ))}
-                </div>
-            </div>
-
             {/* Difficulty Level */}
             <div>
                 <h4 className="font-semibold text-gray-900 mb-4">Difficulty Level</h4>
@@ -181,24 +149,6 @@ function FilterContent({ filterOptions, filters, handleCheckboxChange, handleRad
                                 className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                             />
                             <span className="ml-3 text-sm text-gray-700">{difficulty.label}</span>
-                        </label>
-                    ))}
-                </div>
-            </div>
-
-            {/* Duration */}
-            <div>
-                <h4 className="font-semibold text-gray-900 mb-4">Duration</h4>
-                <div className="space-y-3">
-                    {filterOptions?.durations?.map((duration) => (
-                        <label key={duration.value} className="flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={filters.duration.includes(duration.value)}
-                                onChange={() => handleCheckboxChange("duration", duration.value)}
-                                className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                            />
-                            <span className="ml-3 text-sm text-gray-700">{duration.label}</span>
                         </label>
                     ))}
                 </div>

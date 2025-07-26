@@ -31,11 +31,9 @@ const apiConstants = {
         GET_USERS_STATS: "/get-users-stats",
     },
     loadingStateKeys: {
-        CREATE_COURSE: "createCourse",
-        UPDATE_COURSE: "updateCourse",
         GET_COURSE_DETAILS: "getCourseDetails",
         GET_COURSE_STATS: "getCourseStats",
-        DELETE_COURSE: "deleteCourse",
+        GET_COURSE_LIST: "getCourseList",
 
         CREATE_USERS: "createUsers",
         UPDATE_USERS: "updateUsers",

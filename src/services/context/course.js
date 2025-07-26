@@ -1,24 +1,20 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import { useCourseCreate, useCourseDelete, useCourseGetDetails, useCourseGetStats, useCourseUpdate } from "../hooks/course";
+import { useCourseGetDetails, useCourseGetList, useCourseGetStats } from "../hooks/course";
 
 const CourseContext = createContext(null);
 
 export const CourseProvider = ({ children, initialData = { courseList: [] } }) => {
-    const useCourseCreateState = useCourseCreate();
-    const useCourseUpdateState = useCourseUpdate();
+    const useCourseListState = useCourseGetList();
     const useCourseGetDetailsState = useCourseGetDetails();
-    const useCourseDeleteState = useCourseDelete();
     const useCourseGetStatsState = useCourseGetStats();
 
     return (
         <CourseContext.Provider
             value={{
-                ...useCourseCreateState,
-                ...useCourseUpdateState,
                 ...useCourseGetDetailsState,
-                ...useCourseDeleteState,
+                ...useCourseListState,
                 ...useCourseGetStatsState,
             }}
         >

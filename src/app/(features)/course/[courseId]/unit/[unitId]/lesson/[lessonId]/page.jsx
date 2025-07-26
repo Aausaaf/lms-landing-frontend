@@ -26,7 +26,7 @@ export default function LessonDetailsPage({ params }) {
                         {/* Left sidebar with video lectures navigation */}
                         <EnhancedLectureSidebar courseId={params.courseId} unitId={params.unitId} activeLectureId="" lessonId={params.lessonId} />
                         {/* Main content area with lesson details */}
-                        <main className="flex-1 lg:ml-80">
+                        <main className="flex-1 lg:ml-[370px]">
                             <LessonDetails courseId={params.courseId} unitId={params.unitId} lessonId={params.lessonId} />
                         </main>
                     </div>

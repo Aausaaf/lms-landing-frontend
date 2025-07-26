@@ -250,7 +250,7 @@ export const LecturePlayer = memo(({ courseId, unitId, lessonId, lectureId }) =>
     ];
 
     return (
-        <div className="w-full p-4 max-w-[1100px] fade-in">
+        <div className="w-full p-4 max-w-[1290px] fade-in">
             {/* SEO-friendly breadcrumb navigation */}
             <Breadcrumb items={breadcrumbItems} />
 

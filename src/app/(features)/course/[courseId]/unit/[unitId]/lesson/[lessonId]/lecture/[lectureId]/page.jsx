@@ -19,7 +19,7 @@ export async function generateMetadata({ params }) {
 
 export default function LecturePage({ params }) {
     console.log("params", params);
-    
+
     return (
         <ErrorBoundary>
             <Layout skipFooter={true}>
@@ -28,7 +28,7 @@ export default function LecturePage({ params }) {
                         {/* Enhanced left sidebar with improved navigation */}
                         <EnhancedLectureSidebar courseId={params.courseId} unitId={params.unitId} activeLectureId={params.lectureId} lessonId={params.lessonId} />
                         {/* Main content area with enhanced lecture player */}
-                        <main className="flex-1 lg:ml-80">
+                        <main className="flex-1 lg:ml-[370px]">
                             <LecturePlayer courseId={params.courseId} unitId={params.unitId} lessonId={params.lessonId} lectureId={params.lectureId} />
                         </main>
                     </div>

@@ -1,4 +1,6 @@
 import ConfirmationAlert from "@/components/ConfirmationAlert";
+import ApiUtils from "@/services/utils";
+import apiConstants from "@/services/utils/constants";
 import axios from "axios";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -300,6 +302,26 @@ class GlobalUtils {
 
     static cn(...inputs) {
         return twMerge(clsx(inputs));
+    }
+    static getMediaUrl({ courseId, moduleId, lessonId, videoId, key }) {
+        let url = apiConstants.BACKEND_API_BASE_URL;
+        if (courseId) {
+            url += `/course/${courseId}`;
+        }
+        if (moduleId) {
+            url += `/module/${moduleId}`;
+        }
+        if (lessonId) {
+            url += `/lesson/${lessonId}`;
+        }
+        if (videoId) {
+            url += `/video/${videoId}`;
+        }
+        if (key) {
+            url += `/getImage?type=${key}`;
+        }
+        url += `&token=${ApiUtils.getAuthToken()}`;
+        return url;
     }
 }
 

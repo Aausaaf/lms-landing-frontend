@@ -12,30 +12,6 @@ class CourseApiService {
     }
 
     /**
-     * Register a new course
-     * @param {Object} payload - Course data
-     * @param {Object} [params] - Query params
-     * @param {AbortSignal} [signal] - Request cancellation
-     * @returns {Promise<Object>} Created course
-     */
-    async create(payload, params, signal) {
-        const response = await this._apiClient.post("", payload, { params, signal });
-        return response.data;
-    }
-
-    /**
-     * Update an course
-     * @param {Object} payload - Updated course details
-     * @param {Object} [params] - Query params
-     * @param {AbortSignal} [signal] - Request cancellation
-     * @returns {Promise<Object>} Update status
-     */
-    async update(dynamicRoute, payload, params, signal) {
-        const response = await this._apiClient.put(`/${dynamicRoute}`, payload, { params, signal });
-        return response.data;
-    }
-
-    /**
      * Fetch course details
      * @param {Object} [params] - Query params
      * @param {AbortSignal} [signal] - Request cancellation
@@ -43,17 +19,6 @@ class CourseApiService {
      */
     async getDetails(dynamicRoute, params, signal) {
         const response = await this._apiClient.get(`/${dynamicRoute}`, { params, signal });
-        return response.data;
-    }
-
-    /**
-     * Remove an course
-     * @param {Object} [params] - Query params
-     * @param {AbortSignal} [signal] - Request cancellation
-     * @returns {Promise<Object>} Deletion status
-     */
-    async delete(dynamicRoute, params, signal) {
-        const response = await this._apiClient.delete(`/${dynamicRoute}`, { params, signal });
         return response.data;
     }
 
