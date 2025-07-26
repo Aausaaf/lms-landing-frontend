@@ -4,8 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { BookOpen, ChevronRight, Trophy, Clock, CheckCircle } from "lucide-react";
 import Link from "next/link";
-import { MobileSidebar } from "../unit/[unitId]/lecture/[lectureId]/components/mobile-sidebar";
 import GlobalUtils from "@/lib/utils";
+import { MobileSidebar } from "./mobile-sidebar";
 
 const courseData = {
     "class-12-math": {

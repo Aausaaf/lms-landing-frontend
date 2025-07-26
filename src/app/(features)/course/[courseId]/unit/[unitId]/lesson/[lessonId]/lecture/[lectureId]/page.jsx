@@ -1,6 +1,6 @@
-import { LecturePlayer } from "@/app/(features)/course/[courseId]/unit/[unitId]/lecture/[lectureId]/components/lecture-player";
-import { LectureSidebar } from "@/app/(features)/course/[courseId]/unit/[unitId]/lecture/[lectureId]/components/lecture-sidebar";
 import { Layout } from "@/app/layout/layout";
+import { LecturePlayer } from "./components/lecture-player";
+import { LectureSidebar } from "./components/lecture-sidebar";
 
 // SEO metadata for lecture pages
 export async function generateMetadata({ params }) {

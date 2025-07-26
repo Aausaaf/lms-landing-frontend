@@ -1,7 +1,6 @@
 import { LessonDetails } from "@/app/(features)/course/[courseId]/unit/[unitId]/lesson/[lessonId]/components/lesson-details";
-import { LectureSidebar } from "@/app/(features)/course/[courseId]/unit/[unitId]/lecture/[lectureId]/components/lecture-sidebar";
-import { Header } from "@/components/header";
 import { Layout } from "@/app/layout/layout";
+import { LectureSidebar } from "./lecture/[lectureId]/components/lecture-sidebar";
 
 // SEO metadata for lesson pages
 export async function generateMetadata({ params }) {

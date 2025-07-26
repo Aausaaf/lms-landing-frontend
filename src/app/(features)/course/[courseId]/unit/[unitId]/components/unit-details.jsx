@@ -11,8 +11,6 @@ import {
     Download,
     ExternalLink,
     FileText,
-    LinkIcon,
-    ChevronRight,
     School,
     Info,
     User,

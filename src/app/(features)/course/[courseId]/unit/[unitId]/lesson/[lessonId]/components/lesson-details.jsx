@@ -1,32 +1,10 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-    Play,
-    Clock,
-    Star,
-    Award,
-    BookOpen,
-    Info,
-    Target,
-    Download,
-    ExternalLink,
-    FileText,
-    LinkIcon,
-    CheckCircle,
-    Club,
-    School,
-    Users,
-    GraduationCap,
-    Paperclip,
-    Link2,
-    User,
-    File,
-    ChevronDown,
-} from "lucide-react";
+import { Play, Clock, Award, BookOpen, Info, Download, ExternalLink, FileText, Club, School, Users, GraduationCap, Paperclip, Link2, User, File, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Breadcrumb } from "@/components/Breadcrumb";

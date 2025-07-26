@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,7 +14,6 @@ import {
     Star,
     BookOpen,
     ArrowLeft,
-    icons,
     SparkleIcon,
     User,
     File,
@@ -29,7 +28,7 @@ import {
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Tabs from "@/components/tab";
-import { ContentCard } from "./contentCard";
+import { ContentCard } from "./content-card";
 
 const courseDetails = {
     "class-12-math": {
@@ -102,7 +101,7 @@ const courseDetails = {
             {
                 id: "unit-1",
                 title: "Relations and functions",
-                description: "Types of relations, Types of functions, Composition of functions and invertible function",
+                summary: "Types of relations, Types of functions, Composition of functions and invertible function",
                 lectures: 4,
                 duration: "2.5 hours",
                 difficulty: "Medium",
@@ -111,7 +110,7 @@ const courseDetails = {
             {
                 id: "unit-2",
                 title: "Inverse trigonometric functions",
-                description: "Basic of inverse trigonometric functions, Properties of inverse trigonometric functions",
+                summary: "Basic of inverse trigonometric functions, Properties of inverse trigonometric functions",
                 lectures: 3,
                 duration: "2 hours",
                 difficulty: "Hard",
@@ -120,7 +119,7 @@ const courseDetails = {
             {
                 id: "unit-3",
                 title: "Matrices",
-                description: "Matrix operations, Types of matrices, Addition of matrices",
+                summary: "Matrix operations, Types of matrices, Addition of matrices",
                 lectures: 5,
                 duration: "3 hours",
                 difficulty: "Medium",
@@ -320,12 +319,10 @@ export function CourseOverview({ courseId }) {
                                 <div key={unit.id} className="border rounded-lg p-6 hover:shadow-md transition-shadow">
                                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
                                         <div className="flex items-start space-x-4">
-                                            <div className="w-8 h-8 bg-orange-200/30 text-orange-500  rounded-lg flex items-center justify-center font-bold text-md">
-                                                {index + 1}
-                                            </div>
+                                            <div className="w-8 h-8 bg-orange-200/30 text-orange-500  rounded-lg flex items-center justify-center font-bold text-md">{index + 1}</div>
                                             <div className="flex-1">
                                                 <h3 className="font-semibold text-lg mb-1">{unit.title}</h3>
-                                                <p className="text-sm text-muted-foreground mb-3">{unit.description}</p>
+                                                <p className="text-sm text-muted-foreground mb-3">{unit.summary}</p>
                                                 <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                                                     <div className="flex items-center space-x-1">
                                                         <Play className="w-4 h-4" />

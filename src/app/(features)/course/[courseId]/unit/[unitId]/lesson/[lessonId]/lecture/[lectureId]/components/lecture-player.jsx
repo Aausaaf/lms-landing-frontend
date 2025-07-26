@@ -28,8 +28,8 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { ContentCard } from "../../../../../../../../../components/contentCard";
 import Tabs from "@/components/tab";
+import { ContentCard } from "@/app/(features)/course/[courseId]/components/content-card";
 
 const lectureDetails = {
     "lecture-1": {

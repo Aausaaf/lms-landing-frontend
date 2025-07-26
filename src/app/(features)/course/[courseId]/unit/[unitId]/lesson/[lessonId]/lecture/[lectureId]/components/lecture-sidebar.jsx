@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Play, CheckCircle, Clock, BookOpen, ChevronLeft, Star, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { MobileSidebar } from "./mobile-sidebar";
+import { MobileSidebar } from "../../../../../../../components/mobile-sidebar";
 import GlobalUtils from "@/lib/utils";
 
 const lectureData = {
@@ -56,17 +56,9 @@ export function LectureSidebar({ courseId, unitId, activeLectureId, lessonId }) 
 
     const SidebarContent = () => (
         <div className="px-3 mt-6 custom-scrollbar">
-            {/* Back to Course Navigation */}
-            {/* <Link href={`/course/${courseId}`} className="block mb-4">
-                <Button variant="ghost" size="sm" className="w-full justify-start hover:bg-muted">
-                    <ChevronLeft className="w-4 h-4 mr-2" />
-                    Back to Course
-                </Button>
-            </Link> */}
-
             {/* Back to Lesson Details - NEW ADDITION */}
             {lessonId && (
-                <Link href={`/course/${courseId}/unit/${unitId}/lesson/${lessonId}`} className="block mb-2  -mt-3">
+                <Link href={`/course/${courseId}/unit/${unitId}/lesson/${lessonId}`} className="block mb-2 ">
                     <Button variant="ghost" size="sm" className="w-full justify-start hover:text-primary-500">
                         <ChevronLeft className="w-4 h-4 mr-2 ml-[-0.5rem]" />
                         Back to Lesson Details
