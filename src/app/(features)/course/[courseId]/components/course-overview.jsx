@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, memo, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,158 +27,76 @@ import {
     BadgeIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import Tabs from "@/components/tab";
 import { ContentCard } from "./content-card";
+import { courseDetails } from "@/app/(features)/course/mock-data";
+import { useResponsive } from "@/lib/hooks/use-responsive";
+import { useErrorHandler } from "@/lib/hooks/use-error-handler";
 
-const courseDetails = {
-    "class-12-math": {
-        title: "Class 12 Mathematics",
-        summary: "This comprehensive course is based on the new rationalized NCERT 2023-2024 books, covering all essential mathematical concepts for Class 12 students.",
-        description:
-            "This comprehensive course is based on the new rationalized NCERT 2023-2024 books, covering all essential mathematical concepts for Class 12 students. This comprehensive course is based on the new rationalized NCERT 2023-2024 books, covering all essential mathematical concepts for Class 12 students. This comprehensive course is based on the new rationalized NCERT 2023-2024 books, covering all essential mathematical concepts for Class 12 students. This comprehensive course is based on the new rationalized NCERT 2023-2024 books, covering all essential mathematical concepts for Class 12 students. This comprehensive course is based on the new rationalized NCERT 2023-2024 books, covering all essential mathematical concepts for Class 12 students.",
-        image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2940&auto=format&fit=crop",
-        rating: 4.8,
-        students: 15420,
-        duration: "120 hours",
-        level: "Advanced",
-        language: "English/Hindi",
-        features: [
-            { name: "HTML/CSS", level: "Advanced" },
-            { name: "JavaScript", level: "Advanced" },
-            { name: "React.js", level: "Intermediate" },
-            { name: "Node.js", level: "Intermediate" },
-            { name: "MongoDB", level: "Beginner" },
-            { name: "Git/GitHub", level: "Intermediate" },
-        ],
-        learningOutcomes: [
-            "Master relations and functions concepts",
-            "Understand inverse trigonometric functions",
-            "Solve complex matrix problems",
-            "Apply calculus in real-world scenarios",
-            "Prepare for competitive exams",
-        ],
-        prerequisites: ["Basic computer skills", "No prior programming experience required"],
-        instructors: [
-            {
-                name: "Dr. Kushagra Thakral",
-                role: "Mathematics Professor",
-                avatar: "/placeholder.svg?height=60&width=60",
-                bio: "PhD in Mathematics with 15+ years of teaching experience",
-                rating: 4.9,
-                courses: 12,
-            },
-        ],
-        certificateCriteria: {
-            certificateImage: "https://marketplace.canva.com/EAF7ijX8ZNQ/2/0/1600w/canva-q6rkKUKUUH4.jpg",
-            certificateImagePreview: "https://marketplace.canva.com/EAF7ijX8ZNQ/2/0/1600w/canva-q6rkKUKUUH4.jpg",
-            certificateDescription:
-                "Earn a professional certificate upon completion of the course. This certificate verifies your proficiency in web development fundamentals and can be shared on your resume and professional profiles.",
-            certificateBenefits: [
-                "Recognized by industry professionals",
-                "Shareable on LinkedIn and other platforms",
-                "Verifiable through our certificate portal",
-                "Demonstrates practical coding skills",
-            ],
-        },
-        attachments: [
-            {
-                title: "Course Workbook",
-                description: "Comprehensive PDF guide with exercises and examples",
-                file: "workbook.pdf",
-            },
-            {
-                title: "Code Examples",
-                description: "Starter code and completed projects",
-                file: "code-examples.zip",
-            },
-            {
-                title: "Resource Links",
-                description: "Curated list of helpful development resources",
-                file: "resources.txt",
-            },
-        ],
-        units: [
-            {
-                id: "unit-1",
-                title: "Relations and functions",
-                summary: "Types of relations, Types of functions, Composition of functions and invertible function",
-                lectures: 4,
-                duration: "2.5 hours",
-                difficulty: "Medium",
-                topics: ["Equivalence relations and their properties", "Types of functions", "Composition of functions"],
-            },
-            {
-                id: "unit-2",
-                title: "Inverse trigonometric functions",
-                summary: "Basic of inverse trigonometric functions, Properties of inverse trigonometric functions",
-                lectures: 3,
-                duration: "2 hours",
-                difficulty: "Hard",
-                topics: ["Basic inverse trig functions", "Properties and applications"],
-            },
-            {
-                id: "unit-3",
-                title: "Matrices",
-                summary: "Matrix operations, Types of matrices, Addition of matrices",
-                lectures: 5,
-                duration: "3 hours",
-                difficulty: "Medium",
-                topics: ["Matrix basics", "Matrix operations", "Special matrices"],
-            },
-        ],
-        stats: {
-            totalVideos: 45,
-            totalQuizzes: 12,
-            totalAssignments: 8,
-            avgCompletionTime: "3 months",
-        },
-    },
-};
-
-// Loading component for course overview
-function CourseOverviewSkeleton() {
-    return (
-        <div className="w-full p-4 lg:p-8 space-y-8">
-            <div className="space-y-6">
-                <div className="h-64 lg:h-80 bg-muted rounded-xl animate-pulse" />
-                <div className="space-y-4">
-                    <div className="h-8 bg-muted rounded animate-pulse w-3/4" />
-                    <div className="h-4 bg-muted rounded animate-pulse w-full" />
-                    <div className="h-4 bg-muted rounded animate-pulse w-2/3" />
-                </div>
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="h-20 bg-muted rounded animate-pulse" />
-                ))}
+/**
+ * Loading skeleton component with enhanced dark mode support
+ */
+const CourseOverviewSkeleton = memo(() => (
+    <div className="w-full p-4 lg:p-8 space-y-8">
+        <div className="space-y-6">
+            <div className="h-64 lg:h-80 bg-muted dark:bg-gray-800 rounded-xl animate-pulse" />
+            <div className="space-y-4">
+                <div className="h-8 bg-muted dark:bg-gray-800 rounded animate-pulse w-3/4" />
+                <div className="h-4 bg-muted dark:bg-gray-800 rounded animate-pulse w-full" />
+                <div className="h-4 bg-muted dark:bg-gray-800 rounded animate-pulse w-2/3" />
             </div>
         </div>
-    );
-}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-20 bg-muted dark:bg-gray-800 rounded animate-pulse" />
+            ))}
+        </div>
+    </div>
+));
 
-export function CourseOverview({ courseId }) {
+CourseOverviewSkeleton.displayName = "CourseOverviewSkeleton";
+
+/**
+ * Enhanced course overview component with improved performance and dark mode
+ */
+export const CourseOverview = memo(({ courseId }) => {
+    // State management
     const [showFullDescription, setShowFullDescription] = useState(false);
     const [loading, setLoading] = useState(true);
+
+    // Custom hooks
+    const { isMobile } = useResponsive();
+    const { handleError } = useErrorHandler();
+
+    // Get course data with error handling
     const course = courseDetails[courseId];
 
+    // Loading effect
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 800);
         return () => clearTimeout(timer);
     }, []);
 
-    if (loading) {
-        return <CourseOverviewSkeleton />;
-    }
+    // Toggle description handler
+    const toggleDescription = useCallback(() => {
+        setShowFullDescription((prev) => !prev);
+    }, []);
 
-    if (!course) {
+    // Error handling for missing course
+    if (!loading && !course) {
         return (
             <div className="w-full p-8 text-center">
-                <h2 className="text-2xl font-bold text-muted-foreground">Course not found</h2>
+                <h2 className="text-2xl font-bold text-muted-foreground dark:text-muted-foreground">Course not found</h2>
+                <p className="text-muted-foreground dark:text-muted-foreground mt-2">The requested course could not be found.</p>
             </div>
         );
     }
 
+    if (loading) {
+        return <CourseOverviewSkeleton />;
+    }
+
+    // Tab configuration with enhanced content
     const tabs = [
         {
             id: "overview",
@@ -185,32 +104,32 @@ export function CourseOverview({ courseId }) {
             content: (
                 <div className="space-y-6">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Card className="p-4 text-center">
-                            <div className="text-2xl font-bold text-orange-500">{course.stats.totalVideos}</div>
-                            <div className="text-sm text-muted-foreground">Video Lectures</div>
+                        <Card className="p-4 text-center bg-card dark:bg-gray-800 border-border dark:border-gray-700">
+                            <div className="text-2xl font-bold text-orange-500 dark:text-orange-400">{course.stats.totalVideos}</div>
+                            <div className="text-sm text-muted-foreground dark:text-muted-foreground">Video Lectures</div>
                         </Card>
-                        <Card className="p-4 text-center">
-                            <div className="text-2xl font-bold text-blue-500">{course.stats.totalQuizzes}</div>
-                            <div className="text-sm text-muted-foreground">Quizzes</div>
+                        <Card className="p-4 text-center bg-card dark:bg-gray-800 border-border dark:border-gray-700">
+                            <div className="text-2xl font-bold text-blue-500 dark:text-blue-400">{course.stats.totalQuizzes}</div>
+                            <div className="text-sm text-muted-foreground dark:text-muted-foreground">Quizzes</div>
                         </Card>
-                        <Card className="p-4 text-center">
-                            <div className="text-2xl font-bold text-green-500">{course.stats.totalAssignments}</div>
-                            <div className="text-sm text-muted-foreground">Assignments</div>
+                        <Card className="p-4 text-center bg-card dark:bg-gray-800 border-border dark:border-gray-700">
+                            <div className="text-2xl font-bold text-green-500 dark:text-green-400">{course.stats.totalAssignments}</div>
+                            <div className="text-sm text-muted-foreground dark:text-muted-foreground">Assignments</div>
                         </Card>
-                        <Card className="p-4 text-center">
-                            <div className="text-2xl font-bold text-purple-500">{course.stats.avgCompletionTime}</div>
-                            <div className="text-sm text-muted-foreground">Avg. Completion</div>
+                        <Card className="p-4 text-center bg-card dark:bg-gray-800 border-border dark:border-gray-700">
+                            <div className="text-2xl font-bold text-purple-500 dark:text-purple-400">{course.stats.avgCompletionTime}</div>
+                            <div className="text-sm text-muted-foreground dark:text-muted-foreground">Avg. Completion</div>
                         </Card>
                     </div>
 
                     <ContentCard
                         subTitle="A detailed overview of what this course covers"
                         title="About This Course"
-                        icon={<FileText className="w-[1.1rem] h-[1.1rem] text-orange-600" />}
+                        icon={<FileText className="w-[1.1rem] h-[1.1rem] text-orange-600 dark:text-orange-400" />}
                         headerColor="white"
                     >
                         <div
-                            className={` text-gray-600 prose prose-lg dark:prose-invert max-w-none ${showFullDescription ? "" : "line-clamp-4"}`}
+                            className={`text-gray-600 dark:text-gray-300 prose prose-lg dark:prose-invert max-w-none ${showFullDescription ? "" : "line-clamp-4"}`}
                             dangerouslySetInnerHTML={{
                                 __html: course.description || "<p>...</p>",
                             }}
@@ -218,7 +137,7 @@ export function CourseOverview({ courseId }) {
                         <Button
                             variant="ghost"
                             className="mt-4 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/30 p-0 h-auto font-semibold text-sm"
-                            onClick={() => setShowFullDescription(!showFullDescription)}
+                            onClick={toggleDescription}
                         >
                             {showFullDescription ? (
                                 <span className="flex items-center">
@@ -270,16 +189,17 @@ export function CourseOverview({ courseId }) {
                                     .filter((outcome) => outcome.trim())
                                     .map((outcome, index) => (
                                         <div key={index} className="flex items-start group hover:bg-purple-50 dark:hover:bg-purple-950/20 p-2 sm:p-3 rounded-lg transition-colors">
-                                            <div className="flex-shrink-0 h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mr-2 sm:mr-3 group-hover:scale-110 transition-transform ">
+                                            <div className="flex-shrink-0 h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mr-2 sm:mr-3 group-hover:scale-110 transition-transform">
                                                 <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                                             </div>
-                                            <p className={`text-gray-800 dark:text-gray-200 font-medium leading-relaxed ${"text-sm"}`}>{outcome}</p>
+                                            <p className={`text-gray-800 dark:text-gray-200 font-medium leading-relaxed text-sm`}>{outcome}</p>
                                         </div>
                                     ))}
                             </div>
                         </ContentCard>
                     )}
 
+                    {/* Prerequisites */}
                     {course.prerequisites?.length > 0 && course.prerequisites[0] && (
                         <ContentCard title="Prerequisites" Icon={Award} headerColor="green" subTitle="Topics or knowledge you should know before taking this course">
                             <div className="space-y-0">
@@ -290,7 +210,7 @@ export function CourseOverview({ courseId }) {
                                             <div className="flex-shrink-0 h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mr-2 sm:mr-3 group-hover:scale-110 transition-transform">
                                                 <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                                             </div>
-                                            <p className={`text-gray-800 dark:text-gray-200 font-medium leading-relaxed  "text-sm`}>{prerequisite}</p>
+                                            <p className={`text-gray-800 dark:text-gray-200 font-medium leading-relaxed text-sm`}>{prerequisite}</p>
                                         </div>
                                     ))}
                             </div>
@@ -316,14 +236,16 @@ export function CourseOverview({ courseId }) {
                     >
                         <div className="space-y-4">
                             {course.units.map((unit, index) => (
-                                <div key={unit.id} className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+                                <div key={unit.id} className="border border-border dark:border-gray-700 rounded-lg p-6 hover:shadow-md transition-shadow bg-card dark:bg-gray-800">
                                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
                                         <div className="flex items-start space-x-4">
-                                            <div className="w-8 h-8 bg-orange-200/30 text-orange-500  rounded-lg flex items-center justify-center font-bold text-md">{index + 1}</div>
+                                            <div className="w-8 h-8 bg-orange-200/30 dark:bg-orange-600/30 text-orange-500 dark:text-orange-400 rounded-lg flex items-center justify-center font-bold text-md">
+                                                {index + 1}
+                                            </div>
                                             <div className="flex-1">
-                                                <h3 className="font-semibold text-lg mb-1">{unit.title}</h3>
-                                                <p className="text-sm text-muted-foreground mb-3">{unit.summary}</p>
-                                                <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+                                                <h3 className="font-semibold text-lg mb-1 text-foreground dark:text-foreground">{unit.title}</h3>
+                                                <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-3">{unit.summary}</p>
+                                                <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground dark:text-muted-foreground">
                                                     <div className="flex items-center space-x-1">
                                                         <Play className="w-4 h-4" />
                                                         <span>{unit.lectures} lectures</span>
@@ -332,25 +254,27 @@ export function CourseOverview({ courseId }) {
                                                         <Clock className="w-4 h-4" />
                                                         <span>{unit.duration}</span>
                                                     </div>
-                                                    <Badge variant="outline" className="text-xs">
+                                                    <Badge variant="outline" className="text-xs border-border dark:border-gray-600 text-muted-foreground dark:text-muted-foreground">
                                                         {unit.difficulty}
                                                     </Badge>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="flex items-center space-x-2">
-                                            <Badge variant="outline">Unit mastery: 0%</Badge>
+                                            <Badge variant="outline" className="border-border dark:border-gray-600 text-muted-foreground dark:text-muted-foreground">
+                                                Unit mastery: 0%
+                                            </Badge>
                                             <Link href={`/course/${courseId}/unit/${unit.id}`}>
-                                                <Button className="bg-orange-500 hover:bg-orange-600">Start Learning</Button>
+                                                <Button className="bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700">Start Learning</Button>
                                             </Link>
                                         </div>
                                     </div>
 
                                     <div className="ml-16 space-y-2">
-                                        <h4 className="text-sm font-medium text-muted-foreground mb-2">Topics covered:</h4>
+                                        <h4 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground mb-2">Topics covered:</h4>
                                         {unit.topics.map((topic, topicIndex) => (
-                                            <div key={topicIndex} className="flex items-center space-x-2 text-sm text-muted-foreground">
-                                                <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                                            <div key={topicIndex} className="flex items-center space-x-2 text-sm text-muted-foreground dark:text-muted-foreground">
+                                                <div className="w-1.5 h-1.5 bg-orange-500 dark:bg-orange-400 rounded-full"></div>
                                                 <span>{topic}</span>
                                             </div>
                                         ))}
@@ -369,9 +293,9 @@ export function CourseOverview({ courseId }) {
             content: (
                 <ContentCard title="Instructors" Icon={Users} headerColor="purple" subTitle="Meet the educators who designed and will guide the course">
                     <div className={`grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4`}>
-                        {course.instructors?.map((instructor) => (
+                        {course.instructors?.map((instructor, index) => (
                             <div
-                                key={instructor.id}
+                                key={index}
                                 className="flex items-center p-2 sm:p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-purple-200 dark:hover:border-purple-800/40 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-all group"
                             >
                                 <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border-2 border-purple-100 dark:border-purple-900/30 group-hover:border-purple-300 dark:group-hover:border-purple-700/50 transition-colors flex-shrink-0">
@@ -453,7 +377,7 @@ export function CourseOverview({ courseId }) {
                             </div>
                         )}
 
-                        <p className={`text-gray-700 dark:text-gray-300 leading-relaxed  text-sm md:text-sm`}>{course.certificateCriteria.certificateDescription}</p>
+                        <p className={`text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-sm`}>{course.certificateCriteria.certificateDescription}</p>
 
                         {course.certificateCriteria.certificateBenefits?.length > 0 && (
                             <div className="grid">
@@ -464,7 +388,7 @@ export function CourseOverview({ courseId }) {
                                             <div className="h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center mr-2 sm:mr-3 group-hover:scale-110 transition-transform flex-shrink-0">
                                                 <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                                             </div>
-                                            <p className={`text-gray-800 dark:text-gray-200 font-medium text-sm" md:text-sm`}>{benefit}</p>
+                                            <p className={`text-gray-800 dark:text-gray-200 font-medium text-sm md:text-sm`}>{benefit}</p>
                                         </div>
                                     ))}
                             </div>
@@ -476,10 +400,13 @@ export function CourseOverview({ courseId }) {
     ];
 
     return (
-        <div className="w-full p-4  fade-in">
+        <div className="w-full p-4 fade-in">
             {/* Back to Course List Navigation */}
             <div className="mb-3">
-                <Link href="/course-list" className="text-sm inline-flex items-center text-muted-foreground hover:text-orange-500 transition-colors">
+                <Link
+                    href="/course-list"
+                    className="text-sm inline-flex items-center text-muted-foreground dark:text-muted-foreground hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
+                >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     <span>Back to Course List</span>
                 </Link>
@@ -513,9 +440,9 @@ export function CourseOverview({ courseId }) {
                 </div>
 
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-2">
-                    <p className="text-md text-muted-foreground flex-1">{course.summary}</p>
+                    <p className="text-md text-muted-foreground dark:text-muted-foreground flex-1">{course.summary}</p>
                     <div className="flex flex-col sm:flex-row gap-3">
-                        <Button className="bg-orange-500 hover:bg-orange-600">Start Learning</Button>
+                        <Button className="bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700">Start Learning</Button>
                     </div>
                 </div>
             </div>
@@ -523,4 +450,6 @@ export function CourseOverview({ courseId }) {
             <Tabs variant="underline" defaultTab={{ id: "overview" }} tabs={tabs} />
         </div>
     );
-}
+});
+
+CourseOverview.displayName = "CourseOverview";

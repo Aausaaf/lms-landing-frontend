@@ -104,7 +104,8 @@
         "src/app/layout/theme-toggle.jsx",
         "src/app/layout/layout.jsx",
         "src/app/layout/footer.jsx",
-        "src/app/providers/theme-provider.jsx"
+        "src/app/providers/theme-provider.jsx",
+        "src/app/(features)/course/mock-data.js"
     ],
     "exclude": ["node_modules"]
 }

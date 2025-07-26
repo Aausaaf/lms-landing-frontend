@@ -1,339 +1,91 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect, memo, useCallback } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-    Play,
-    File,
-    Award,
-    BookOpen,
-    Download,
-    ExternalLink,
-    FileText,
-    School,
-    Info,
-    User,
-    Users,
-    ChevronDown,
-    ChevronUp,
-    CheckCircle,
-    GraduationCap,
-    Paperclip,
-    Clock,
-    Link2,
-} from "lucide-react";
+import { Play, File, Award, BookOpen, Download, ExternalLink, FileText, School, Info, User, Users, ChevronDown, ChevronUp, CheckCircle, GraduationCap, Paperclip, Clock, Link2 } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import Tabs from "@/components/tab";
 import { ContentCard } from "../../../../../../../components/contentCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import { unitData } from "@/app/(features)/course/mock-data";
+import { useResponsive } from "@/lib/hooks/use-responsive";
+import { useErrorHandler } from "@/lib/hooks/use-error-handler";
 
-const unitData = {
-    "unit-1": {
-        title: "Relations and functions",
-        description:
-            "This comprehensive unit covers the fundamental concepts of relations and functions, including types of relations, function properties, and their real-world applications in mathematics.",
-        masteryPoints: 800,
-        duration: "2.5 hours",
-        difficulty: "Medium",
-        progress: 25,
-        // Unit overview and learning objectives
-        about: {
-            description: `
-        <p>This comprehensive bootcamp takes you from absolute beginner to professional web developer. 
-        You'll learn HTML, CSS, JavaScript, React, Node.js, and more through hands-on projects and real-world examples.</p>
-        <p>Our step-by-step approach ensures you build a solid foundation before moving on to more advanced topics. 
-        By the end of this module, you'll have the skills to build complete web applications and the confidence to apply for web development positions.</p>
-        <p>The module includes practical projects, coding exercises, and real-world scenarios that prepare you for the modern web development landscape.</p>
-    `,
-            learningOutcomes: [
-                "Build responsive websites with HTML, CSS, and JavaScript",
-                "Create dynamic web applications with React",
-                "Develop backend APIs with Node.js and Express",
-                "Deploy full-stack applications to production",
-                "Implement authentication and database integration",
-                "Master modern development tools and workflows",
-            ],
-            attachments: [
-                {
-                    title: "Module Workbook",
-                    description: "Comprehensive PDF guide with exercises and examples",
-                    file: "workbook.pdf",
-                },
-                {
-                    title: "Code Examples",
-                    description: "Starter code and completed projects",
-                    file: "code-examples.zip",
-                },
-                {
-                    title: "Resource Links",
-                    description: "Curated list of helpful development resources",
-                    file: "resources.txt",
-                },
-            ],
-            prerequisites: ["Basic computer skills", "No prior programming experience required"],
-            resources: [
-                {
-                    title: "Khan Academy - Relations and Functions",
-                    description: "Interactive exercises and video explanations on relations and functions",
-                    url: "https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:functions",
-                    type: "Interactive Course",
-                },
-                {
-                    title: "Wolfram MathWorld - Relation",
-                    description: "Comprehensive mathematical reference for relation theory",
-                    url: "https://mathworld.wolfram.com/Relation.html",
-                    type: "Reference",
-                },
-                {
-                    title: "MIT OpenCourseWare - Discrete Mathematics",
-                    description: "Advanced topics in discrete mathematics including relations",
-                    url: "https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/",
-                    type: "Course Material",
-                },
-                {
-                    title: "GeoGebra - Function Explorer",
-                    description: "Interactive tool to visualize and explore functions",
-                    url: "https://www.geogebra.org/graphing",
-                    type: "Interactive Tool",
-                },
-            ],
-            instructors: [
-                {
-                    name: "Dr. Kushagra Thakral",
-                    role: "Unit Instructor",
-                    avatar: "/placeholder.svg?height=60&width=60",
-                    bio: "Specialized in algebra and discrete mathematics with focus on relations and functions",
-                    expertise: ["Algebra", "Discrete Mathematics", "Set Theory"],
-                    experience: "15+ years teaching experience",
-                    rating: 4.9,
-                },
-            ],
-        },
-        // Unit instructor information
-        instructors: [
-            {
-                name: "Dr. Kushagra Thakral",
-                role: "Unit Instructor",
-                avatar: "/placeholder.svg?height=60&width=60",
-                bio: "Specialized in algebra and discrete mathematics with focus on relations and functions",
-                expertise: ["Algebra", "Discrete Mathematics", "Set Theory"],
-                experience: "15+ years teaching experience",
-                rating: 4.9,
-            },
-        ],
-        // Unit lessons with video content
-        lessons: [
-            {
-                id: "lesson-1",
-                title: "Types of relations",
-                description: "Learn about different types of relations including reflexive, symmetric, and transitive relations with practical examples.",
-                duration: "45 minutes",
-                lectureCount: 4,
-                difficulty: "Medium",
-                status: "in-progress",
-                progress: 60,
-                lecturesList: [
-                    {
-                        id: "lecture-1",
-                        title: "Equivalence relations and their properties",
-                        type: "video",
-                        duration: "12:45",
-                        status: "completed",
-                        description: "Introduction to equivalence relations and their three key properties",
-                    },
-                    {
-                        id: "lecture-2",
-                        title: "Equivalence relations - Non math example",
-                        type: "video",
-                        duration: "8:30",
-                        status: "current",
-                        description: "Real-world examples of equivalence relations outside mathematics",
-                    },
-                    {
-                        id: "lecture-3",
-                        title: "Equivalence relations in geometry",
-                        type: "video",
-                        duration: "15:20",
-                        status: "not-started",
-                        description: "Geometric applications of equivalence relations",
-                    },
-                    {
-                        id: "lecture-4",
-                        title: "Empty and Universal relations",
-                        type: "video",
-                        duration: "10:15",
-                        status: "not-started",
-                        description: "Understanding special types of relations",
-                    },
-                ],
-            },
-            {
-                id: "lesson-2",
-                title: "Function fundamentals",
-                description: "Master the basics of functions including domain, range, and function notation with comprehensive examples.",
-                duration: "50 minutes",
-                lectureCount: 3,
-                difficulty: "Medium",
-                status: "not-started",
-                progress: 0,
-                lecturesList: [
-                    {
-                        id: "lecture-5",
-                        title: "Introduction to functions",
-                        type: "video",
-                        duration: "15:30",
-                        status: "not-started",
-                        description: "Basic concepts and definition of functions",
-                    },
-                    {
-                        id: "lecture-6",
-                        title: "Domain and range concepts",
-                        type: "video",
-                        duration: "18:45",
-                        status: "not-started",
-                        description: "Understanding domain and range in functions",
-                    },
-                    {
-                        id: "lecture-7",
-                        title: "Function notation and evaluation",
-                        type: "video",
-                        duration: "16:20",
-                        status: "not-started",
-                        description: "Proper function notation and evaluation techniques",
-                    },
-                ],
-            },
-        ],
-        // Downloadable resources
-        attachments: [
-            {
-                name: "Unit 1 - Relations Notes.pdf",
-                size: "1.5 MB",
-                type: "pdf",
-                description: "Comprehensive notes on relations",
-            },
-            {
-                name: "Function Examples.pdf",
-                size: "900 KB",
-                type: "pdf",
-                description: "Worked examples and practice problems",
-            },
-            {
-                name: "Quick Reference Sheet.pdf",
-                size: "600 KB",
-                type: "pdf",
-                description: "Formulas and key concepts summary",
-            },
-        ],
-        // External learning resources
-        externalResources: [
-            {
-                title: "Khan Academy - Relations and Functions",
-                description: "Interactive exercises and video explanations on relations and functions",
-                url: "https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:functions",
-                type: "Interactive Course",
-            },
-            {
-                title: "Wolfram MathWorld - Relation",
-                description: "Comprehensive mathematical reference for relation theory",
-                url: "https://mathworld.wolfram.com/Relation.html",
-                type: "Reference",
-            },
-            {
-                title: "MIT OpenCourseWare - Discrete Mathematics",
-                description: "Advanced topics in discrete mathematics including relations",
-                url: "https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/",
-                type: "Course Material",
-            },
-            {
-                title: "GeoGebra - Function Explorer",
-                description: "Interactive tool to visualize and explore functions",
-                url: "https://www.geogebra.org/graphing",
-                type: "Interactive Tool",
-            },
-        ],
-        // Unit assessment quiz
-        quiz: {
-            id: "quiz-1",
-            title: "Unit 1 Assessment",
-            description: "Comprehensive quiz covering all topics in relations and functions",
-            masteryPoints: 160,
-            questions: 15,
-            timeLimit: "45 minutes",
-        },
-    },
-};
-
-// Loading skeleton component with theme support
-function UnitDetailsSkeleton() {
-    return (
-        <div className="w-full p-4 lg:p-8 space-y-8 bg-gradient-orange min-h-screen">
-            <div className="space-y-4">
-                <div className="h-8 bg-muted rounded animate-pulse w-3/4" />
-                <div className="h-4 bg-muted rounded animate-pulse w-full" />
-                <div className="h-4 bg-muted rounded animate-pulse w-2/3" />
-            </div>
-            <div className="h-10 bg-muted rounded animate-pulse w-full" />
-            <div className="space-y-4">
-                {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="h-32 bg-muted rounded animate-pulse" />
-                ))}
-            </div>
+/**
+ * Loading skeleton component with enhanced dark mode support
+ */
+const UnitDetailsSkeleton = memo(() => (
+    <div className="w-full p-4 lg:p-8 space-y-8 bg-gray-100 dark:bg-gray-900 min-h-screen">
+        <div className="space-y-4">
+            <div className="h-8 bg-muted dark:bg-gray-800 rounded animate-pulse w-3/4" />
+            <div className="h-4 bg-muted dark:bg-gray-800 rounded animate-pulse w-full" />
+            <div className="h-4 bg-muted dark:bg-gray-800 rounded animate-pulse w-2/3" />
         </div>
-    );
-}
+        <div className="h-10 bg-muted dark:bg-gray-800 rounded animate-pulse w-full" />
+        <div className="space-y-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="h-32 bg-muted dark:bg-gray-800 rounded animate-pulse" />
+            ))}
+        </div>
+    </div>
+));
 
-export function UnitDetails({ courseId, unitId }) {
+UnitDetailsSkeleton.displayName = "UnitDetailsSkeleton";
+
+/**
+ * Enhanced unit details component with improved performance and dark mode
+ */
+export const UnitDetails = memo(({ courseId, unitId }) => {
+    // State management
     const [loading, setLoading] = useState(true);
     const [expandedLessons, setExpandedLessons] = useState({ "lesson-1": true });
-    const [viewportWidth, setViewportWidth] = useState(1024);
     const [showFullDescription, setShowFullDescription] = useState(false);
+
+    // Custom hooks
+    const { isMobile, isTablet } = useResponsive();
+    const { handleError } = useErrorHandler();
+
+    // Get unit data with error handling
     const unit = unitData[unitId];
-    // Responsive breakpoints
-    useEffect(() => {
-        const updateViewport = () => {
-            setViewportWidth(window.innerWidth);
-        };
 
-        updateViewport();
-        window.addEventListener("resize", updateViewport);
-        return () => window.removeEventListener("resize", updateViewport);
-    }, []);
-
-    // Determine device type based on viewport width
-    const isMobile = viewportWidth <= 768;
-
-    const isTablet = viewportWidth > 768 && viewportWidth <= 1024;
-
+    // Loading effect
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 600);
         return () => clearTimeout(timer);
     }, []);
 
-    // Toggle lesson expansion for better content organization
-    const toggleLessonExpansion = (lessonId) => {
+    // Toggle lesson expansion handler
+    const toggleLessonExpansion = useCallback((lessonId) => {
         setExpandedLessons((prev) => ({
             ...prev,
             [lessonId]: !prev[lessonId],
         }));
-    };
+    }, []);
+
+    // Toggle description handler
+    const toggleDescription = useCallback(() => {
+        setShowFullDescription((prev) => !prev);
+    }, []);
+
+    // Error handling for missing unit
+    if (!loading && !unit) {
+        return (
+            <div className="w-full p-8 text-center bg-gray-100 dark:bg-gray-900 min-h-screen">
+                <h2 className="text-2xl font-bold text-muted-foreground dark:text-muted-foreground">Unit not found</h2>
+                <p className="text-muted-foreground dark:text-muted-foreground mt-2">The requested unit could not be found.</p>
+            </div>
+        );
+    }
 
     if (loading) {
         return <UnitDetailsSkeleton />;
     }
 
-    if (!unit) {
-        return (
-            <div className="w-full p-8 text-center bg-gradient-orange min-h-screen">
-                <h2 className="text-2xl font-bold text-muted-foreground">Unit not found</h2>
-            </div>
-        );
-    }
-
+    // Breadcrumb configuration
     const breadcrumbItems = [
         {
             title: "Courses List",
@@ -346,7 +98,10 @@ export function UnitDetails({ courseId, unitId }) {
             icon: <BookOpen className="h-3.5 w-3.5" />,
         },
     ];
+
     const unitDetails = unit.about;
+
+    // Tab configuration with enhanced content
     const tabs = [
         {
             id: "lessons",
@@ -354,21 +109,28 @@ export function UnitDetails({ courseId, unitId }) {
             content: (
                 <div className="mt-2 space-y-6">
                     {unit.lessons.map((lesson, index) => (
-                        <Card key={lesson.id} className="hover:shadow-lg shadow-0 transition-all duration-300 border border-gray-200 hover:border-orange-500 bg-card">
+                        <Card
+                            key={lesson.id}
+                            className="hover:shadow-lg shadow-0 transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-orange-500 dark:hover:border-orange-400 bg-card dark:bg-gray-800"
+                        >
                             <CardContent className="p-6">
-                                {/* Clickable lesson header - navigates to lesson details */}
+                                {/* Clickable lesson header */}
                                 <Link href={`/course/${courseId}/unit/${unitId}/lesson/${lesson.id}`}>
                                     <div className="cursor-pointer group" onClick={(e) => e.stopPropagation()}>
                                         <div className="flex items-start justify-between mb-1">
                                             <div className="flex items-start space-x-4 flex-1">
-                                                {/* Lesson number indicator with theme colors */}
-                                                <div className="w-8 h-8 bg-orange-300/30 text-orange-500  rounded-lg flex items-center justify-center font-bold text-md">{index + 1}</div>
+                                                {/* Lesson number indicator */}
+                                                <div className="w-8 h-8 bg-orange-300/30 dark:bg-orange-600/30 text-orange-500 dark:text-orange-400 rounded-lg flex items-center justify-center font-bold text-md">
+                                                    {index + 1}
+                                                </div>
                                                 <div className="flex-1">
-                                                    <h3 className="text-lg font-semibold group-hover:text-orange-500 transition-colors text-foreground">{lesson.title}</h3>
-                                                    <p className="text-muted-foreground mb-3 leading-relaxed text-sm">{lesson.description}</p>
+                                                    <h3 className="text-lg font-semibold group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors text-foreground dark:text-foreground">
+                                                        {lesson.title}
+                                                    </h3>
+                                                    <p className="text-muted-foreground dark:text-muted-foreground mb-3 leading-relaxed text-sm">{lesson.description}</p>
                                                 </div>
                                             </div>
-                                            {lesson.progress > 0 && <span className="text-sm text-muted-foreground">{lesson.progress}% complete</span>}
+                                            {lesson.progress > 0 && <span className="text-sm text-muted-foreground dark:text-muted-foreground">{lesson.progress}% complete</span>}
                                         </div>
                                         {/* Progress bar for lessons in progress */}
                                         {lesson.progress > 0 && <Progress value={lesson.progress} className="h-1" />}
@@ -379,14 +141,14 @@ export function UnitDetails({ courseId, unitId }) {
                                 {expandedLessons[lesson.id] && (
                                     <div className="pt-4">
                                         <div className="flex items-center justify-between mb-4">
-                                            <h4 className="font-semibold flex items-center space-x-2 text-foreground">
-                                                <Play className="w-4 h-4 text-orange-500" />
+                                            <h4 className="font-semibold flex items-center space-x-2 text-foreground dark:text-foreground">
+                                                <Play className="w-4 h-4 text-orange-500 dark:text-orange-400" />
                                                 <span>Video Lectures</span>
                                             </h4>
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                className="border-border text-foreground hover:bg-muted bg-transparent"
+                                                className="border-border dark:border-gray-600 text-foreground dark:text-foreground hover:bg-muted dark:hover:bg-gray-700 bg-transparent"
                                                 onClick={() => toggleLessonExpansion(lesson.id)}
                                             >
                                                 Collapse
@@ -397,36 +159,42 @@ export function UnitDetails({ courseId, unitId }) {
                                         <div className="grid gap-3">
                                             {lesson.lecturesList.map((lecture, lectureIndex) => (
                                                 <Link key={lecture.id} href={`/course/${courseId}/unit/${unitId}/lesson/${lesson.id}/lecture/${lecture.id}`} className="block">
-                                                    <div className="flex items-center space-x-3 p-4 rounded-lg hover:bg-muted transition-colors cursor-pointer border border-border bg-card">
+                                                    <div className="flex items-center space-x-3 p-4 rounded-lg hover:bg-muted dark:hover:bg-gray-700 transition-colors cursor-pointer border border-border dark:border-gray-600 bg-card dark:bg-gray-800">
                                                         <div className="flex items-center space-x-3">
-                                                            {/* Video status indicator with theme colors */}
+                                                            {/* Video status indicator */}
                                                             <div
                                                                 className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                                                                    lecture.status === "completed" ? "bg-green-500" : lecture.status === "current" ? "bg-orange-500" : "bg-muted-foreground"
+                                                                    lecture.status === "completed"
+                                                                        ? "bg-green-500"
+                                                                        : lecture.status === "current"
+                                                                        ? "bg-orange-500"
+                                                                        : "bg-muted-foreground dark:bg-gray-600"
                                                                 }`}
                                                             >
                                                                 <Play className="w-4 h-4 text-white" />
                                                             </div>
-                                                            <span className="text-sm font-medium text-muted-foreground bg-muted px-2 py-1 rounded">{lectureIndex + 1}</span>
+                                                            <span className="text-sm font-medium text-muted-foreground dark:text-muted-foreground bg-muted dark:bg-gray-700 px-2 py-1 rounded">
+                                                                {lectureIndex + 1}
+                                                            </span>
                                                         </div>
                                                         <div className="flex-1">
-                                                            <h5 className="font-medium mb-1 text-foreground">{lecture.title}</h5>
-                                                            <p className="text-sm text-muted-foreground mb-2 leading-relaxed">{lecture.description}</p>
+                                                            <h5 className="font-medium mb-1 text-foreground dark:text-foreground">{lecture.title}</h5>
+                                                            <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-2 leading-relaxed">{lecture.description}</p>
                                                             <div className="flex items-center space-x-3 text-sm">
-                                                                <div className="flex items-center space-x-1 text-muted-foreground">
+                                                                <div className="flex items-center space-x-1 text-muted-foreground dark:text-muted-foreground">
                                                                     <Clock className="w-3 h-3" />
                                                                     <span>{lecture.duration}</span>
                                                                 </div>
-                                                                <Badge variant="secondary" className="text-xs bg-muted text-muted-foreground">
+                                                                <Badge variant="secondary" className="text-xs bg-muted dark:bg-gray-700 text-muted-foreground dark:text-gray-300">
                                                                     {lecture.type}
                                                                 </Badge>
                                                                 {lecture.status === "current" && (
-                                                                    <Badge variant="default" className="text-xs bg-orange-500 text-white">
+                                                                    <Badge variant="default" className="text-xs bg-orange-500 dark:bg-orange-600 text-white">
                                                                         Current
                                                                     </Badge>
                                                                 )}
                                                                 {lecture.status === "completed" && (
-                                                                    <Badge variant="default" className="text-xs bg-green-500 text-white">
+                                                                    <Badge variant="default" className="text-xs bg-green-500 dark:bg-green-600 text-white">
                                                                         Completed
                                                                     </Badge>
                                                                 )}
@@ -442,7 +210,12 @@ export function UnitDetails({ courseId, unitId }) {
                                 {/* Toggle button for collapsed lessons */}
                                 {!expandedLessons[lesson.id] && (
                                     <div className="pt-4">
-                                        <Button variant="outline" size="sm" onClick={() => toggleLessonExpansion(lesson.id)} className="w-full border-border text-foreground hover:bg-muted">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => toggleLessonExpansion(lesson.id)}
+                                            className="w-full border-border dark:border-gray-600 text-foreground dark:text-foreground hover:bg-muted dark:hover:bg-gray-700"
+                                        >
                                             <ChevronDown className="w-4 h-4 mr-2" />
                                             Show {lesson.lectureCount} Video Lectures
                                         </Button>
@@ -452,8 +225,8 @@ export function UnitDetails({ courseId, unitId }) {
                         </Card>
                     ))}
 
-                    {/* Unit assessment quiz with theme colors */}
-                    <Card className="border-2 border-orange-200 dark:border-orange-800 bg-gradient-orange-light">
+                    {/* Unit assessment quiz with enhanced dark mode */}
+                    <Card className="border-2 border-orange-200 dark:border-orange-800 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-950/20 dark:to-orange-900/20">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center space-x-4">
@@ -461,9 +234,9 @@ export function UnitDetails({ courseId, unitId }) {
                                         <Award className="w-8 h-8 text-white" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-semibold text-foreground">{unit.quiz.title}</h3>
-                                        <p className="text-muted-foreground mb-2">{unit.quiz.description}</p>
-                                        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                                        <h3 className="text-xl font-semibold text-foreground dark:text-foreground">{unit.quiz.title}</h3>
+                                        <p className="text-muted-foreground dark:text-muted-foreground mb-2">{unit.quiz.description}</p>
+                                        <div className="flex items-center space-x-4 text-sm text-muted-foreground dark:text-muted-foreground">
                                             <span>{unit.quiz.questions} questions</span>
                                             <span>•</span>
                                             <span>{unit.quiz.timeLimit}</span>
@@ -489,7 +262,7 @@ export function UnitDetails({ courseId, unitId }) {
                     <ContentCard
                         subTitle="A detailed overview of what this module covers"
                         title="About This Module"
-                        icon={<FileText className="w-[1.1rem] h-[1.1rem] text-orange-600" />}
+                        icon={<FileText className="w-[1.1rem] h-[1.1rem] text-orange-600 dark:text-orange-400" />}
                         headerColor="white"
                         isMobile={isMobile}
                     >
@@ -502,7 +275,7 @@ export function UnitDetails({ courseId, unitId }) {
                         <Button
                             variant="ghost"
                             className="mt-4 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/30 p-0 h-auto font-semibold text-sm"
-                            onClick={() => setShowFullDescription(!showFullDescription)}
+                            onClick={toggleDescription}
                         >
                             {showFullDescription ? (
                                 <span className="flex items-center">
@@ -563,9 +336,9 @@ export function UnitDetails({ courseId, unitId }) {
                     {/* Instructors */}
                     <ContentCard title="Instructors" Icon={Users} headerColor="purple" subTitle="Meet the educators who designed and will guide the module">
                         <div className={`grid ${isMobile ? "grid-cols-1" : isTablet ? "grid-cols-2" : "grid-cols-2"} gap-3 sm:gap-4`}>
-                            {unitDetails.instructors?.map((instructor) => (
+                            {unitDetails.instructors?.map((instructor, index) => (
                                 <div
-                                    key={instructor.id}
+                                    key={index}
                                     className="flex items-center p-2 sm:p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-purple-200 dark:hover:border-purple-800/40 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-all group"
                                 >
                                     <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border-2 border-purple-100 dark:border-purple-900/30 group-hover:border-purple-300 dark:group-hover:border-purple-700/50 transition-colors flex-shrink-0">
@@ -634,6 +407,7 @@ export function UnitDetails({ courseId, unitId }) {
                         </ContentCard>
                     )}
 
+                    {/* External Resources */}
                     {unitDetails.resources?.length > 0 && unitDetails.resources[0]?.title && (
                         <ContentCard title="External Resources" subTitle="Helpful links and references to supplement your learning" Icon={Link2} headerColor="violet" isMobile={isMobile}>
                             <div className="grid gap-4">
@@ -650,11 +424,7 @@ export function UnitDetails({ courseId, unitId }) {
                                                 </div>
                                                 <div>
                                                     <p className={`text-gray-800 dark:text-gray-200 font-semibold ${isMobile ? "text-sm" : "text-md"}`}>{resource.title}</p>
-                                                    {resource.link && (
-                                                        <p title={resource.link} className="text-gray-600 dark:text-gray-400 text-sm mt-1 truncate max-w-44 break-words">
-                                                            {resource.link}
-                                                        </p>
-                                                    )}
+                                                    {resource.description && <p className="text-gray-600 dark:text-gray-400 text-sm mt-1 truncate max-w-44 break-words">{resource.description}</p>}
                                                 </div>
                                             </div>
                                             <Button
@@ -676,17 +446,19 @@ export function UnitDetails({ courseId, unitId }) {
     ];
 
     return (
-        <div className="w-full p-4  fade-in">
+        <div className="w-full p-4 fade-in">
             {/* SEO-friendly breadcrumb navigation */}
             <Breadcrumb items={breadcrumbItems} />
 
             {/* Unit header with key information */}
-            <div className="mb-2 mt-4 bg-card  p-5 shadow-sm rounded-lg">
-                <h1 className="text-xl font-semibold mb-2 text-foreground">Unit 1: {unit.title}</h1>
-                <p className="text-md text-muted-foreground leading-relaxed">{unit.description}</p>
+            <div className="mb-2 mt-4 bg-card dark:bg-gray-800 p-5 shadow-sm rounded-lg border border-border dark:border-gray-700">
+                <h1 className="text-xl font-semibold mb-2 text-foreground dark:text-foreground">Unit 1: {unit.title}</h1>
+                <p className="text-md text-muted-foreground dark:text-muted-foreground leading-relaxed">{unit.description}</p>
             </div>
 
             <Tabs variant="underline" defaultTab={{ id: "lessons" }} tabs={tabs} />
         </div>
     );
-}
+});
+
+UnitDetails.displayName = "UnitDetails";

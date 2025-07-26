@@ -1,6 +1,7 @@
 import { LessonDetails } from "@/app/(features)/course/[courseId]/unit/[unitId]/lesson/[lessonId]/components/lesson-details";
 import { Layout } from "@/app/layout/layout";
-import { LectureSidebar } from "./lecture/[lectureId]/components/lecture-sidebar";
+import { EnhancedLectureSidebar } from "./lecture/[lectureId]/components/enhanced-lecture-sidebar";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 // SEO metadata for lesson pages
 export async function generateMetadata({ params }) {
@@ -18,17 +19,19 @@ export async function generateMetadata({ params }) {
 
 export default function LessonDetailsPage({ params }) {
     return (
-        <Layout skipFooter={true}>
-            <div className="bg-gray-100">
-                <div className="flex">
-                    {/* Left sidebar with video lectures navigation */}
-                    <LectureSidebar courseId={params.courseId} unitId={params.unitId} activeLectureId="" />
-                    {/* Main content area with lesson details */}
-                    <main className="flex-1 lg:ml-80">
-                        <LessonDetails courseId={params.courseId} unitId={params.unitId} lessonId={params.lessonId} />
-                    </main>
+        <ErrorBoundary>
+            <Layout skipFooter={true}>
+                <div className="bg-gray-100 dark:bg-gray-900">
+                    <div className="flex">
+                        {/* Left sidebar with video lectures navigation */}
+                        <EnhancedLectureSidebar courseId={params.courseId} unitId={params.unitId} activeLectureId="" lessonId={params.lessonId} />
+                        {/* Main content area with lesson details */}
+                        <main className="flex-1 lg:ml-80">
+                            <LessonDetails courseId={params.courseId} unitId={params.unitId} lessonId={params.lessonId} />
+                        </main>
+                    </div>
                 </div>
-            </div>
-        </Layout>
+            </Layout>
+        </ErrorBoundary>
     );
 }

@@ -1,6 +1,7 @@
 import { Layout } from "@/app/layout/layout";
 import { LecturePlayer } from "./components/lecture-player";
-import { LectureSidebar } from "./components/lecture-sidebar";
+import { EnhancedLectureSidebar } from "./components/enhanced-lecture-sidebar";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 // SEO metadata for lecture pages
 export async function generateMetadata({ params }) {
@@ -17,18 +18,22 @@ export async function generateMetadata({ params }) {
 }
 
 export default function LecturePage({ params }) {
+    console.log("params", params);
+    
     return (
-        <Layout skipFooter={true}>
-            <div className="bg-gray-100 min-h-screen">
-                <div className="flex">
-                    {/* Left sidebar with video lectures navigation - now includes lesson navigation */}
-                    <LectureSidebar courseId={params.courseId} unitId={params.unitId} activeLectureId={params.lectureId} lessonId={params.lessonId} />
-                    {/* Main content area with lecture player */}
-                    <main className="flex-1 lg:ml-80">
-                        <LecturePlayer courseId={params.courseId} unitId={params.unitId} lessonId={params.lessonId} lectureId={params.lectureId} />
-                    </main>
+        <ErrorBoundary>
+            <Layout skipFooter={true}>
+                <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
+                    <div className="flex">
+                        {/* Enhanced left sidebar with improved navigation */}
+                        <EnhancedLectureSidebar courseId={params.courseId} unitId={params.unitId} activeLectureId={params.lectureId} lessonId={params.lessonId} />
+                        {/* Main content area with enhanced lecture player */}
+                        <main className="flex-1 lg:ml-80">
+                            <LecturePlayer courseId={params.courseId} unitId={params.unitId} lessonId={params.lessonId} lectureId={params.lectureId} />
+                        </main>
+                    </div>
                 </div>
-            </div>
-        </Layout>
+            </Layout>
+        </ErrorBoundary>
     );
 }
