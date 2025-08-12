@@ -3,6 +3,7 @@ import CourseFilters from "./components/CourseFilters";
 import CourseGrid from "./components/CourseGrid";
 import CoursePagination from "./components/CoursePagination";
 import { Layout } from "@/app/layout/layout";
+import CourseList from "./components/CourseList";
 
 export const metadata = {
     title: "Course List - EduPrime LMS | Find Your Perfect Course",
@@ -22,15 +23,7 @@ export default function CourseListPage() {
                 <CourseListHeader />
 
                 <section className="py-12">
-                    <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex flex-col lg:flex-row gap-8">
-                            <CourseFilters />
-                            <div className="flex-1">
-                                <CourseGrid />
-                                <CoursePagination />
-                            </div>
-                        </div>
-                    </div>
+                    <CourseList />
                 </section>
             </main>
         </Layout>

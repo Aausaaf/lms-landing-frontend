@@ -5,7 +5,7 @@ import { Star, Clock, Heart, Share2, ChevronRight, BookOpen } from "lucide-react
 import Image from "next/image";
 import { useNavigation } from "@/components/navigation";
 import GlobalUtils from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 /**
  * Course Card Component
@@ -48,10 +48,6 @@ export default function CourseCard({ data }) {
         return () => window.removeEventListener("resize", checkMobile);
     }, []);
 
-    const handleCardClick = () => {
-        navigate(`/courses/details/${courseData.id}`);
-    };
-
     const formatInstructorNames = () => {
         if (!courseData.instructors?.length) return "No instructor assigned";
 
@@ -77,14 +73,14 @@ export default function CourseCard({ data }) {
             navigator.share({
                 title: courseData.name,
                 text: courseData.summary,
-                url: window.location.origin + `/courses/details/${courseData.id}`,
+                url: window.location.origin + `/course/${courseData.id}`,
             });
         }
     };
 
     // Card Layout (default)
     return (
-        <div onClick={handleCardClick} className="cursor-pointer" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+        <Link href={`/course/${courseData.id}`} className="cursor-pointer" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             <div className="relative w-full overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 hover:shadow-lg dark:bg-gray-900 dark:hover:bg-gray-800">
                 {/* Course Image */}
                 <div className="relative h-32 sm:h-40 w-full overflow-hidden">
@@ -194,17 +190,18 @@ export default function CourseCard({ data }) {
                         </div>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 pt-2">
                         <button
                             onClick={() => navigate("/course-details")}
-                            className={`group w-full bg-orange-50  text-orange-600 border border-orange-600 font-medium text-sm py-2 rounded-lg hover:bg-orange-700 transition-colors hover:text-white`}
+                            className={`group w-full bg-orange-50  text-orange-600 border border-orange-600 font-medium text-sm py-2 rounded-lg ${
+                                isHovered ? "bg-orange-600 text-white" : ""
+                            } transition-colors`}
                         >
                             Enroll Now
                         </button>
-                        {/* <button className="w-full text-orange-600 border border-orange-600 font-semibold py-3 px-4 rounded-xl hover:bg-orange-50 transition-colors">Preview Course</button> */}
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }

@@ -21,6 +21,24 @@ const apiConstants = {
         DELETE_COURSE: "/",
         GET_COURSE_STATS: "/get-permission-stats",
     },
+    module: {
+        BASE_ROUTE: "/course",
+        MODULE_LIST: "/",
+        GET_MODULE_DETAILS: "/",
+        GET_MODULE_STATS: "/stats",
+    },
+    lesson: {
+        BASE_ROUTE: "/course",
+        LESSON_LIST: "/",
+        GET_LESSON_DETAILS: "/",
+        GET_LESSON_STATS: "/stats",
+    },
+    video: {
+        BASE_ROUTE: "/course",
+        VIDEO_LIST: "/",
+        GET_VIDEO_DETAILS: "/",
+        GET_VIDEO_STATS: "/stats",
+    },
     users: {
         BASE_ROUTE: "/users",
         CREATE_USERS: "/",
@@ -34,6 +52,18 @@ const apiConstants = {
         GET_COURSE_DETAILS: "getCourseDetails",
         GET_COURSE_STATS: "getCourseStats",
         GET_COURSE_LIST: "getCourseList",
+
+        GET_MODULE_DETAILS: "getMODULEDetails",
+        GET_MODULE_STATS: "getMODULEStats",
+        GET_MODULE_LIST: "getMODULEList",
+
+        GET_LESSON_DETAILS: "getLESSONDetails",
+        GET_LESSON_STATS: "getLESSONStats",
+        GET_LESSON_LIST: "getLESSONList",
+
+        GET_VIDEO_DETAILS: "getVIDEODetails",
+        GET_VIDEO_STATS: "getVIDEOStats",
+        GET_VIDEO_LIST: "getVIDEOList",
 
         CREATE_USERS: "createUsers",
         UPDATE_USERS: "updateUsers",

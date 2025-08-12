@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, memo, useCallback } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -29,9 +28,10 @@ import {
 import Link from "next/link";
 import Tabs from "@/components/tab";
 import { ContentCard } from "./content-card";
-import { courseDetails } from "@/app/(features)/course/mock-data";
-import { useResponsive } from "@/lib/hooks/use-responsive";
-import { useErrorHandler } from "@/lib/hooks/use-error-handler";
+import { courseData } from "@/app/(features)/course/mock-data";
+import CourseStats from "./course-stats";
+import { useCourse } from "@/services/context/course";
+import GlobalUtils from "@/lib/utils";
 
 /**
  * Loading skeleton component with enhanced dark mode support
@@ -60,22 +60,13 @@ CourseOverviewSkeleton.displayName = "CourseOverviewSkeleton";
  * Enhanced course overview component with improved performance and dark mode
  */
 export const CourseOverview = memo(({ courseId }) => {
+    const { courseDetails } = useCourse();
     // State management
     const [showFullDescription, setShowFullDescription] = useState(false);
-    const [loading, setLoading] = useState(true);
-
-    // Custom hooks
-    const { isMobile } = useResponsive();
-    const { handleError } = useErrorHandler();
 
     // Get course data with error handling
-    const course = courseDetails[courseId];
-
-    // Loading effect
-    useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 800);
-        return () => clearTimeout(timer);
-    }, []);
+    const course = courseDetails?.data?.data;
+    const units = courseData[courseId]?.units;
 
     // Toggle description handler
     const toggleDescription = useCallback(() => {
@@ -83,7 +74,7 @@ export const CourseOverview = memo(({ courseId }) => {
     }, []);
 
     // Error handling for missing course
-    if (!loading && !course) {
+    if (!courseDetails.isLoading && !course) {
         return (
             <div className="w-full p-8 text-center">
                 <h2 className="text-2xl font-bold text-muted-foreground dark:text-muted-foreground">Course not found</h2>
@@ -92,7 +83,7 @@ export const CourseOverview = memo(({ courseId }) => {
         );
     }
 
-    if (loading) {
+    if (courseDetails.isLoading) {
         return <CourseOverviewSkeleton />;
     }
 
@@ -102,26 +93,11 @@ export const CourseOverview = memo(({ courseId }) => {
             id: "overview",
             label: "Overview",
             content: (
-                <div className="space-y-6">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Card className="p-4 text-center bg-card dark:bg-gray-800 border-border dark:border-gray-700">
-                            <div className="text-2xl font-bold text-orange-500 dark:text-orange-400">{course.stats.totalVideos}</div>
-                            <div className="text-sm text-muted-foreground dark:text-muted-foreground">Video Lectures</div>
-                        </Card>
-                        <Card className="p-4 text-center bg-card dark:bg-gray-800 border-border dark:border-gray-700">
-                            <div className="text-2xl font-bold text-blue-500 dark:text-blue-400">{course.stats.totalQuizzes}</div>
-                            <div className="text-sm text-muted-foreground dark:text-muted-foreground">Quizzes</div>
-                        </Card>
-                        <Card className="p-4 text-center bg-card dark:bg-gray-800 border-border dark:border-gray-700">
-                            <div className="text-2xl font-bold text-green-500 dark:text-green-400">{course.stats.totalAssignments}</div>
-                            <div className="text-sm text-muted-foreground dark:text-muted-foreground">Assignments</div>
-                        </Card>
-                        <Card className="p-4 text-center bg-card dark:bg-gray-800 border-border dark:border-gray-700">
-                            <div className="text-2xl font-bold text-purple-500 dark:text-purple-400">{course.stats.avgCompletionTime}</div>
-                            <div className="text-sm text-muted-foreground dark:text-muted-foreground">Avg. Completion</div>
-                        </Card>
-                    </div>
+                <div className="space-y-6 mt-2">
+                    {/* Course State */}
+                    <CourseStats />
 
+                    {/* About Course */}
                     <ContentCard
                         subTitle="A detailed overview of what this course covers"
                         title="About This Course"
@@ -228,22 +204,22 @@ export const CourseOverview = memo(({ courseId }) => {
                     <ContentCard
                         title={"Course Curriculum"}
                         Icon={BookOpen}
-                        subTitle={
-                            <span>
-                                {course.units.length} units • {course.stats.totalVideos} lectures • {course.duration} total length
-                            </span>
-                        }
+                        subTitle={<span className="text-sm text-muted-foreground">Explore all units with summaries, lectures, and learning outcomes</span>}
                     >
                         <div className="space-y-4">
-                            {course.units.map((unit, index) => (
-                                <div key={unit.id} className="border border-border dark:border-gray-700 rounded-lg p-6 hover:shadow-md transition-shadow bg-card dark:bg-gray-800">
+                            {units.map((unit, index) => (
+                                <Link
+                                    href={`/course/${courseId}/unit/${unit.id}`}
+                                    key={unit.id}
+                                    className="border group block border-border dark:border-gray-700 rounded-lg p-6 hover:shadow-md transition-shadow bg-card dark:bg-gray-800 hover:border-orange-300"
+                                >
                                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
                                         <div className="flex items-start space-x-4">
                                             <div className="w-8 h-8 bg-orange-200/30 dark:bg-orange-600/30 text-orange-500 dark:text-orange-400 rounded-lg flex items-center justify-center font-bold text-md">
                                                 {index + 1}
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="font-semibold text-lg mb-1 text-foreground dark:text-foreground">{unit.title}</h3>
+                                                <h3 className="font-semibold text-lg mb-1 text-foreground dark:text-foreground group-hover:text-orange-500">{unit.name}</h3>
                                                 <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-3">{unit.summary}</p>
                                                 <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground dark:text-muted-foreground">
                                                     <div className="flex items-center space-x-1">
@@ -254,16 +230,15 @@ export const CourseOverview = memo(({ courseId }) => {
                                                         <Clock className="w-4 h-4" />
                                                         <span>{unit.duration}</span>
                                                     </div>
-                                                    <Badge variant="outline" className="text-xs border-border dark:border-gray-600 text-muted-foreground dark:text-muted-foreground">
-                                                        {unit.difficulty}
-                                                    </Badge>
+                                                    {unit.categories.map((item) => (
+                                                        <Badge variant="outline" className="text-xs border-border dark:border-gray-600 text-muted-foreground dark:text-muted-foreground">
+                                                            {item.name}
+                                                        </Badge>
+                                                    ))}
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="flex items-center space-x-2">
-                                            <Badge variant="outline" className="border-border dark:border-gray-600 text-muted-foreground dark:text-muted-foreground">
-                                                Unit mastery: 0%
-                                            </Badge>
                                             <Link href={`/course/${courseId}/unit/${unit.id}`}>
                                                 <Button className="bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700">Start Learning</Button>
                                             </Link>
@@ -272,14 +247,14 @@ export const CourseOverview = memo(({ courseId }) => {
 
                                     <div className="ml-16 space-y-2">
                                         <h4 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground mb-2">Topics covered:</h4>
-                                        {unit.topics.map((topic, topicIndex) => (
+                                        {unit.learningOutcomes.map((topic, topicIndex) => (
                                             <div key={topicIndex} className="flex items-center space-x-2 text-sm text-muted-foreground dark:text-muted-foreground">
                                                 <div className="w-1.5 h-1.5 bg-orange-500 dark:bg-orange-400 rounded-full"></div>
                                                 <span>{topic}</span>
                                             </div>
                                         ))}
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     </ContentCard>
@@ -325,34 +300,36 @@ export const CourseOverview = memo(({ courseId }) => {
         {
             id: "resources",
             label: "Resources",
-            content: course.attachments?.length > 0 && course.attachments?.[0]?.title && (
+            content: (
                 <ContentCard title="Course Resources" Icon={Paperclip} headerColor="green" subTitle="Downloadable files and additional course materials">
                     <div className="grid gap-3 sm:gap-4">
-                        {course.attachments
-                            .filter((attachment) => attachment.title.trim())
-                            .map((attachment, index) => (
-                                <div
-                                    key={index}
-                                    className="group flex items-center justify-between p-3 sm:p-4 rounded-xl border border-green-100 dark:border-green-900/30 hover:border-green-200 dark:hover:border-green-800/40 transition-all duration-300 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 hover:shadow-lg transform hover:-translate-y-1"
-                                >
-                                    <div className="flex items-center min-w-0 flex-1">
-                                        <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-110 transition-transform flex-shrink-0">
-                                            <Paperclip className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-                                        </div>
-                                        <div className="min-w-0 flex-1">
-                                            <p className={`text-gray-800 dark:text-gray-200 font-bold truncate text-sm md:text-base`}>{attachment.title}</p>
-                                            {attachment.description && <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mt-1 line-clamp-2">{attachment.description}</p>}
-                                        </div>
-                                    </div>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30 group-hover:scale-110 transition-transform flex-shrink-0 ml-2"
-                                    >
-                                        <Download className="h-4 w-4 sm:h-5 sm:w-5" />
-                                    </Button>
-                                </div>
-                            ))}
+                        {course.attachments?.length > 0 && course.attachments?.[0]?.title
+                            ? course.attachments
+                                  .filter((attachment) => attachment.title.trim())
+                                  .map((attachment, index) => (
+                                      <div
+                                          key={index}
+                                          className="group flex items-center justify-between p-3 sm:p-4 rounded-xl border border-green-100 dark:border-green-900/30 hover:border-green-200 dark:hover:border-green-800/40 transition-all duration-300 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 hover:shadow-lg transform hover:-translate-y-1"
+                                      >
+                                          <div className="flex items-center min-w-0 flex-1">
+                                              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-110 transition-transform flex-shrink-0">
+                                                  <Paperclip className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                                              </div>
+                                              <div className="min-w-0 flex-1">
+                                                  <p className={`text-gray-800 dark:text-gray-200 font-bold truncate text-sm md:text-base`}>{attachment.title}</p>
+                                                  {attachment.description && <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mt-1 line-clamp-2">{attachment.description}</p>}
+                                              </div>
+                                          </div>
+                                          <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              className="text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30 group-hover:scale-110 transition-transform flex-shrink-0 ml-2"
+                                          >
+                                              <Download className="h-4 w-4 sm:h-5 sm:w-5" />
+                                          </Button>
+                                      </div>
+                                  ))
+                            : "Resources  Not Found"}
                     </div>
                 </ContentCard>
             ),
@@ -361,39 +338,41 @@ export const CourseOverview = memo(({ courseId }) => {
         {
             id: "certificate",
             label: "Certificate",
-            content: course.certificateCriteria?.certificateDescription && (
+            content: (
                 <ContentCard title="Course Certificate" Icon={BadgeIcon} headerColor="indigo" subTitle="Get recognized with a certificate after course completion">
-                    <div className="space-y-4 sm:space-y-6">
-                        {course.certificateCriteria.certificateImagePreview && (
-                            <div className="flex justify-center">
-                                <div className="relative group">
-                                    <img
-                                        src={course.certificateCriteria.certificateImagePreview || "/placeholder.svg"}
-                                        alt="Certificate Preview"
-                                        className="rounded-xl border-2 border-indigo-200 dark:border-indigo-800 max-h-32 sm:max-h-48 object-contain shadow-lg group-hover:shadow-xl transition-shadow"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    {course.certificateCriteria?.certificateDescription && (
+                        <div className="space-y-4 sm:space-y-6">
+                            {course.certificateCriteria.certificateImagePreview && (
+                                <div className="flex justify-center">
+                                    <div className="relative group">
+                                        <img
+                                            src={course.certificateCriteria.certificateImagePreview || "/placeholder.svg"}
+                                            alt="Certificate Preview"
+                                            className="rounded-xl border-2 border-indigo-200 dark:border-indigo-800 max-h-32 sm:max-h-48 object-contain shadow-lg group-hover:shadow-xl transition-shadow"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        <p className={`text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-sm`}>{course.certificateCriteria.certificateDescription}</p>
+                            <p className={`text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-sm`}>{course.certificateCriteria.certificateDescription}</p>
 
-                        {course.certificateCriteria.certificateBenefits?.length > 0 && (
-                            <div className="grid">
-                                {course.certificateCriteria.certificateBenefits
-                                    .filter((benefit) => benefit.trim())
-                                    .map((benefit, index) => (
-                                        <div key={index} className="flex items-center group hover:bg-indigo-50 dark:hover:bg-indigo-950/20 p-2 sm:p-3 rounded-lg transition-colors">
-                                            <div className="h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center mr-2 sm:mr-3 group-hover:scale-110 transition-transform flex-shrink-0">
-                                                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+                            {course.certificateCriteria.certificateBenefits?.length > 0 && (
+                                <div className="grid">
+                                    {course.certificateCriteria.certificateBenefits
+                                        .filter((benefit) => benefit.trim())
+                                        .map((benefit, index) => (
+                                            <div key={index} className="flex items-center group hover:bg-indigo-50 dark:hover:bg-indigo-950/20 p-2 sm:p-3 rounded-lg transition-colors">
+                                                <div className="h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center mr-2 sm:mr-3 group-hover:scale-110 transition-transform flex-shrink-0">
+                                                    <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+                                                </div>
+                                                <p className={`text-gray-800 dark:text-gray-200 font-medium text-sm md:text-sm`}>{benefit}</p>
                                             </div>
-                                            <p className={`text-gray-800 dark:text-gray-200 font-medium text-sm md:text-sm`}>{benefit}</p>
-                                        </div>
-                                    ))}
-                            </div>
-                        )}
-                    </div>
+                                        ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </ContentCard>
             ),
         },
@@ -415,8 +394,8 @@ export const CourseOverview = memo(({ courseId }) => {
             {/* Hero Section with Course Image and Basic Info */}
             <div className="mb-0">
                 <div className="relative rounded-xl overflow-hidden mb-4">
-                    <img src={course.image || "/placeholder.svg"} alt={course.title} className="w-full h-64 lg:h-80 object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <img src={GlobalUtils.getMediaUrl({ courseId, key: "bannerImage" }) || "/placeholder.svg"} alt={course.title} className="w-full h-64 lg:h-80 object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/100 via-transparent to-transparent" />
                     <div className="absolute bottom-6 left-6 text-white">
                         <h1 className="text-3xl lg:text-4xl font-bold mb-2">{course.title}</h1>
                         <div className="flex flex-wrap items-center gap-4 text-sm">
@@ -426,24 +405,23 @@ export const CourseOverview = memo(({ courseId }) => {
                             </div>
                             <div className="flex items-center space-x-1">
                                 <Users className="w-4 h-4" />
-                                <span>{course.students.toLocaleString()} students</span>
+                                <span>{course.students?.toLocaleString() || "100"} students</span>
                             </div>
                             <div className="flex items-center space-x-1">
                                 <Clock className="w-4 h-4" />
-                                <span>{course.duration}</span>
+                                <span>{course.duration} Hrs</span>
                             </div>
-                            <Badge variant="secondary" className="bg-white/20 text-white">
-                                {course.level}
-                            </Badge>
+                            {course.difficultyLevel?.map((item) => (
+                                <Badge variant="secondary" className="bg-white/20 text-white">
+                                    {item}
+                                </Badge>
+                            ))}
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-2">
                     <p className="text-md text-muted-foreground dark:text-muted-foreground flex-1">{course.summary}</p>
-                    <div className="flex flex-col sm:flex-row gap-3">
-                        <Button className="bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700">Start Learning</Button>
-                    </div>
                 </div>
             </div>
 

@@ -26,8 +26,8 @@ export const CourseSidebar = memo(({ courseId, activeUnitId }) => {
                         <BookOpen className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
-                        <h2 className="text-lg font-semibold group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors text-foreground dark:text-foreground">{course.title}</h2>
-                        <p className="text-[0.8rem] text-muted-foreground dark:text-muted-foreground">{course.subtitle}</p>
+                        <h2 className="text-lg font-semibold group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors text-foreground dark:text-foreground">{course.name}</h2>
+                        <p className="text-[0.8rem] text-muted-foreground dark:text-muted-foreground">{course.summary}</p>
                     </div>
                     <ChevronRight className="w-4 h-4 text-muted-foreground dark:text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
@@ -63,13 +63,13 @@ export const CourseSidebar = memo(({ courseId, activeUnitId }) => {
                     <Link key={unit.id} href={`/course/${courseId}/unit/${unit.id}`} className="block">
                         <Card
                             className={GlobalUtils.cn(
-                                "p-4 hover:shadow-md transition-all duration-200 cursor-pointer border-2 group bg-card dark:bg-gray-800",
+                                "p-3 hover:shadow-md transition-all duration-200 cursor-pointer  group bg-card dark:bg-gray-800",
                                 activeUnitId === unit.id
                                     ? "border-orange-500 dark:border-orange-400 bg-orange-50 dark:bg-orange-950/20 shadow-md"
                                     : "border-transparent hover:border-orange-400 dark:hover:border-orange-500 hover:bg-muted/50 dark:hover:bg-gray-700/50"
                             )}
                         >
-                            <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center space-x-3">
                                     <div
                                         className={GlobalUtils.cn(
@@ -90,13 +90,13 @@ export const CourseSidebar = memo(({ courseId, activeUnitId }) => {
 
                             <div className="">
                                 <div className="font-medium text-sm leading-tight group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors text-foreground dark:text-foreground">
-                                    {unit.title}
+                                    {unit.name}
                                 </div>
                             </div>
 
                             {/* Unit Progress Bar */}
                             {unit.progress > 0 && (
-                                <div className="space-y-1 mb-3">
+                                <div className="space-y-1 mt-2">
                                     <div className="flex justify-between text-xs">
                                         <span className="text-muted-foreground dark:text-muted-foreground">Progress</span>
                                         <span className="font-medium text-foreground dark:text-foreground">{unit.progress}%</span>

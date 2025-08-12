@@ -1,7 +1,6 @@
-import { LessonDetails } from "@/app/(features)/course/[courseId]/unit/[unitId]/lesson/[lessonId]/components/lesson-details";
 import { Layout } from "@/app/layout/layout";
-import { EnhancedLectureSidebar } from "./lecture/[lectureId]/components/enhanced-lecture-sidebar";
 import { ErrorBoundary } from "@/components/error-boundary";
+import LessonDetails from "./components/lesson-details";
 
 // SEO metadata for lesson pages
 export async function generateMetadata({ params }) {
@@ -20,17 +19,8 @@ export async function generateMetadata({ params }) {
 export default function LessonDetailsPage({ params }) {
     return (
         <ErrorBoundary>
-            <Layout skipFooter={true}>
-                <div className="bg-gray-100 dark:bg-gray-900">
-                    <div className="flex">
-                        {/* Left sidebar with video lectures navigation */}
-                        <EnhancedLectureSidebar courseId={params.courseId} unitId={params.unitId} activeLectureId="" lessonId={params.lessonId} />
-                        {/* Main content area with lesson details */}
-                        <main className="flex-1 lg:ml-[370px]">
-                            <LessonDetails courseId={params.courseId} unitId={params.unitId} lessonId={params.lessonId} />
-                        </main>
-                    </div>
-                </div>
+            <Layout fullWidth={true} skipFooter={true}>
+                <LessonDetails courseId={params.courseId} unitId={params.unitId} lessonId={params.lessonId} />
             </Layout>
         </ErrorBoundary>
     );

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, ChevronDown, Search, Bell, User, Settings, LogOut} from "lucide-react";
+import { Menu, X, ChevronDown, Search, Bell, User, Settings, LogOut } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import "./styles/index.css";
 import { navigation } from "./config/navbar";
 
-export function Navbar() {
+export function Navbar({ fullWidth }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [searchOpen, setSearchOpen] = useState(false);
@@ -33,7 +33,7 @@ export function Navbar() {
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md transition-all duration-300 shadow-sm">
-            <nav className="mx-auto flex max-w-[1500px] items-center justify-between p-4 lg:px-8" aria-label="Global">
+            <nav className={`mx-auto flex ${!fullWidth ? "max-w-[1500px]" : ""} items-center justify-between p-4 lg:px-8" aria-label="Global`}>
                 {/* Logo */}
                 <div className="flex lg:flex-1">
                     <Link href="/" className="-m-1.5 p-1.5 group">
@@ -42,7 +42,7 @@ export function Navbar() {
                                 <span className="text-white font-bold text-lg">L</span>
                             </div>
                             <div className="hidden sm:block">
-                                <span className="text-xl font-bold text-gray-900 dark:text-white">LayoutPro</span>
+                                <span className="text-xl font-bold text-gray-900 dark:text-white">LMS</span>
                                 <div className="text-xs text-orange-500 font-medium">Premium Components</div>
                             </div>
                         </div>

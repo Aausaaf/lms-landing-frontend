@@ -8,10 +8,12 @@ import { FileText, Download, User, BookOpen, School, Club, Info, FileVideo, Chev
 import { Breadcrumb } from "@/components/Breadcrumb";
 import Tabs from "@/components/tab";
 import { ContentCard } from "@/app/(features)/course/[courseId]/components/content-card";
-import { EnhancedVideoPlayer } from "./enhanced-video-player";
+import { EnhancedVideoPlayer } from "./video-player";
 import { lectureDetails } from "@/app/(features)/course/mock-data";
 import { useResponsive } from "@/lib/hooks/use-responsive";
 import { useErrorHandler } from "@/lib/hooks/use-error-handler";
+import { useParams } from "next/navigation";
+import { useVideo } from "@/services/context/video";
 
 /**
  * Loading skeleton component for lecture player
@@ -35,24 +37,18 @@ LecturePlayerSkeleton.displayName = "LecturePlayerSkeleton";
 /**
  * Enhanced lecture player component with improved video player and content sections
  */
-export const LecturePlayer = memo(({ courseId, unitId, lessonId, lectureId }) => {
+export const LecturePlayer = memo(() => {
+    const { courseId, unitId, lessonId, lectureId } = useParams();
+    const { lectureDetails } = useVideo();
     // State management
-    const [loading, setLoading] = useState(true);
     const [showFullDescription, setShowFullDescription] = useState(false);
     const [videoProgress, setVideoProgress] = useState(0);
 
     // Custom hooks
     const { isMobile, isTablet } = useResponsive();
-    const { handleError } = useErrorHandler();
 
     // Get lecture data with error handling
-    const lecture = lectureDetails[lectureId];
-
-    // Loading effect
-    useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 500);
-        return () => clearTimeout(timer);
-    }, []);
+    const lecture = lectureDetails.data.data;
 
     // Video event handlers
     const handleVideoPlay = useCallback(() => {
@@ -66,20 +62,6 @@ export const LecturePlayer = memo(({ courseId, unitId, lessonId, lectureId }) =>
     const handleVideoProgress = useCallback((currentTime) => {
         setVideoProgress(currentTime);
     }, []);
-
-    // Error handling for missing lecture
-    if (!loading && !lecture) {
-        return (
-            <div className="w-full p-8 text-center">
-                <h2 className="text-2xl font-bold text-muted-foreground dark:text-muted-foreground">Lecture not found</h2>
-                <p className="text-muted-foreground dark:text-muted-foreground mt-2">The requested lecture could not be found.</p>
-            </div>
-        );
-    }
-
-    if (loading) {
-        return <LecturePlayerSkeleton />;
-    }
 
     // Breadcrumb navigation
     const breadcrumbItems = [
@@ -257,14 +239,14 @@ export const LecturePlayer = memo(({ courseId, unitId, lessonId, lectureId }) =>
             <div className="bg-white dark:bg-gray-900 rounded-sm">
                 {/* Enhanced Video Player */}
                 <div className="mb-2 mt-4">
-                    <EnhancedVideoPlayer videoUrl={lecture.videoUrl || "/placeholder.svg"} title={lecture.title} onPlay={handleVideoPlay} onPause={handleVideoPause} onProgress={handleVideoProgress} />
+                    <EnhancedVideoPlayer videoUrl={lecture.videoUrl || "/placeholder.svg"} title={lecture.name} onPlay={handleVideoPlay} onPause={handleVideoPause} onProgress={handleVideoProgress} />
                 </div>
 
                 {/* Lecture Information */}
                 <div className="mb-2 p-4 pt-0">
                     <div className="flex items-start justify-between mb-2">
                         <div className="flex-1">
-                            <h1 className="text-xl font-semibold mb-1 text-foreground dark:text-foreground">{lecture.title}</h1>
+                            <h1 className="text-xl font-semibold mb-1 text-foreground dark:text-foreground">{lecture.name}</h1>
                             <p className="text-md text-muted-foreground dark:text-muted-foreground leading-relaxed">{lecture.summary}</p>
                         </div>
                         <Badge variant="outline" className="ml-4 border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400">
