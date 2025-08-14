@@ -126,7 +126,7 @@ export const aboutUsData = {
         {
             name: "Sarah Johnson",
             position: "CEO & Founder",
-            image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
+            image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjJ8fHByb2ZpbGV8ZW58MHx8MHx8fDA%3D",
             bio: "Former education director with 15+ years of experience in educational technology.",
             social: {
                 linkedin: "#",
