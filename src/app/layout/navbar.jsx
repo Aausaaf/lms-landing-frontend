@@ -43,7 +43,7 @@ export function Navbar({ fullWidth }) {
                             </div>
                             <div className="hidden sm:block">
                                 <span className="text-xl font-bold text-gray-900 dark:text-white">LMS</span>
-                                <div className="text-xs text-orange-500 font-medium">Premium Components</div>
+                                <div className="text-xs text-orange-500 font-medium">Learning management sysmtems</div>
                             </div>
                         </div>
                     </Link>
@@ -194,7 +194,7 @@ export function Navbar({ fullWidth }) {
                                     <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
                                         <span className="text-white font-bold text-sm">L</span>
                                     </div>
-                                    <span className="text-xl font-bold text-gray-900 dark:text-white">LayoutPro</span>
+                                    <span className="text-xl font-bold text-gray-900 dark:text-white">LMS</span>
                                 </div>
                             </Link>
                             <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(false)}>

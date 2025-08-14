@@ -50,25 +50,25 @@ const footerNavigation = {
 const socialLinks = [
     {
         name: "Twitter",
-        href: "https://twitter.com/layoutpro",
+        href: "https://twitter.com/LMS",
         icon: Twitter,
         followers: "12.5K",
     },
     {
         name: "GitHub",
-        href: "https://github.com/layoutpro",
+        href: "https://github.com/LMS",
         icon: Github,
         followers: "8.2K",
     },
     {
         name: "LinkedIn",
-        href: "https://linkedin.com/company/layoutpro",
+        href: "https://linkedin.com/company/LMS",
         icon: Linkedin,
         followers: "15.3K",
     },
     {
         name: "Email",
-        href: "mailto:hello@layoutpro.com",
+        href: "mailto:hello@LMS.com",
         icon: Mail,
         followers: "Newsletter",
     },
@@ -142,8 +142,8 @@ export function Footer() {
                                 <span className="text-white font-bold text-xl">L</span>
                             </div>
                             <div>
-                                <span className="text-2xl font-bold text-gray-900 dark:text-white">LayoutPro</span>
-                                <div className="text-sm text-orange-500 font-medium">Premium Components</div>
+                                <span className="text-2xl font-bold text-gray-900 dark:text-white">LMS</span>
+                                <div className="text-sm text-orange-500 font-medium">Learning management sysmtems</div>
                             </div>
                         </Link>
 
@@ -155,7 +155,7 @@ export function Footer() {
                         <div className="space-y-3 mb-6">
                             <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                                 <Mail className="h-4 w-4 mr-3 text-orange-500" />
-                                hello@layoutpro.com
+                                hello@LMS.com
                             </div>
                             <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                                 <Phone className="h-4 w-4 mr-3 text-orange-500" />
@@ -258,9 +258,9 @@ export function Footer() {
 
                         <div className="text-center lg:text-right">
                             <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                                Made with <Heart className="inline h-4 w-4 text-red-500 mx-1" /> by the LayoutPro team
+                                Made with <Heart className="inline h-4 w-4 text-red-500 mx-1" /> by the LMS team
                             </p>
-                            <p className="text-xs text-gray-400">&copy; {new Date().getFullYear()} LayoutPro. All rights reserved.</p>
+                            <p className="text-xs text-gray-400">&copy; {new Date().getFullYear()} LMS. All rights reserved.</p>
                         </div>
                     </div>
                 </div>
